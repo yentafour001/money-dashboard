@@ -236,6 +236,7 @@
     <div class="topbar-sub">Martingale 5 ไม้ · ทุน 20,000฿ → เป้า 150,000฿ · ค่าน้ำ 1.80</div>
   </div>
   <div class="topbar-right">
+    <span id="sync-status" style="font-size:11px;color:var(--text3)">กำลังโหลด...</span>
     <span id="today-date" style="font-size:12px;color:var(--text3)"></span>
   </div>
 </div>
@@ -413,27 +414,74 @@
 const INIT=20000,TARGET=150000,BETS=[300,700,1650,3800,8750],ODDS=1.80,BUST=17200,WARN=25800;
 const SESS_ALL=['เช้า (06-11น)','กลางวัน (11-14น)','บ่าย (14-18น)','เย็น (18-22น)','ดึก (22-06น)'];
 const STORAGE_KEY='mm_dashboard_v1';
+const GS_URL='https://script.google.com/macros/s/AKfycbwlax14po_GLQQ3oH2gSP3E0uZqBQVA3xPpppy_rIKeib_daH9KAEA6Z2TTPYMX8_9FJQ/exec';
 
 let records=[];
 let eqC,pnlC,sessC;
+let isSyncing=false;
+
+function showSyncStatus(txt,color='var(--text3)'){
+  const el=document.getElementById('sync-status');
+  if(el){ el.textContent=txt; el.style.color=color; }
+}
+
+async function saveToSheets(){
+  // บันทึก localStorage ก่อนเสมอ (offline backup)
+  try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){}
+  // sync ขึ้น Google Sheets
+  showSyncStatus('⏳ กำลัง sync...','var(--amber)');
+  try{
+    await fetch(GS_URL,{
+      method:'POST',
+      body:JSON.stringify({action:'save',records}),
+    });
+    showSyncStatus('✅ Sync แล้ว '+new Date().toLocaleTimeString('th-TH'),'var(--green)');
+  }catch(e){
+    showSyncStatus('⚠️ Offline — บันทึกในเครื่องแล้ว','var(--amber)');
+  }
+}
+
+async function loadFromSheets(){
+  showSyncStatus('⏳ กำลังโหลด...','var(--amber)');
+  try{
+    const res=await fetch(GS_URL+'?t='+Date.now());
+    const data=await res.json();
+    if(data.records && data.records.length){
+      records=data.records.map(r=>({
+        date:r.date, sess:r.sess||'', w:parseInt(r.wins)||0, l:parseInt(r.losses)||0,
+        s:parseInt(r.step)||1, odds:parseFloat(r.odds)||1.80,
+        betAmt:parseFloat(r.betAmt)||0, pnl:parseFloat(r.pnl)||0,
+        equity:parseFloat(r.equity)||INIT, note:r.note||''
+      }));
+      records.sort((a,b)=>a.date.localeCompare(b.date));
+      // backup ลง localStorage
+      try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){}
+      showSyncStatus('✅ โหลดจาก Google Sheets แล้ว','var(--green)');
+    } else {
+      showSyncStatus('📭 ยังไม่มีข้อมูลใน Sheets','var(--text3)');
+    }
+  }catch(e){
+    // fallback to localStorage
+    try{
+      const saved=localStorage.getItem(STORAGE_KEY);
+      if(saved) records=JSON.parse(saved);
+    }catch(e2){}
+    showSyncStatus('⚠️ Offline — โหลดจากเครื่อง','var(--amber)');
+  }
+}
 
 // ── Init ──
-(function(){
+(async function(){
   const today=new Date();
   document.getElementById('inp-date').value=today.toISOString().split('T')[0];
   document.getElementById('today-date').textContent=today.toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-  // load saved data
-  try{
-    const saved=localStorage.getItem(STORAGE_KEY);
-    if(saved) records=JSON.parse(saved);
-  }catch(e){}
-
+  await loadFromSheets();
   render();
   updateSidebar();
 })();
 
-function save(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){} }
+function save(){ saveToSheets(); }
 
 function fmt(n,sign=false){
   const abs=Math.abs(Math.round(n)).toLocaleString('th-TH');
