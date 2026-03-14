@@ -414,7 +414,7 @@
 const INIT=20000,TARGET=150000,BETS=[300,700,1650,3800,8750],ODDS=1.80,BUST=17200,WARN=25800;
 const SESS_ALL=['เช้า (06-11น)','กลางวัน (11-14น)','บ่าย (14-18น)','เย็น (18-22น)','ดึก (22-06น)'];
 const STORAGE_KEY='mm_dashboard_v1';
-const GS_URL='https://script.google.com/macros/s/AKfycby8aNvtsx_VRv7zv1mlOkb4YE3lIpXDif4mS3mHrl6F_WJinu1te_AODLVKmOHGlzNZJA/exec';
+const GS_URL='https://script.google.com/macros/s/AKfycbzvgES_G7zu49UVZVn454-HThIZqxY-QrJsW-M0B4v1JKu2UJPT-t63zPbgYPC3JIryPg/exec';
 
 let records=[];
 let eqC,pnlC,sessC;
@@ -429,13 +429,17 @@ async function saveToSheets(){
   try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){}
   showSyncStatus('⏳ กำลัง sync...','var(--amber)');
   try{
-    await fetch(GS_URL,{
+    const res=await fetch(GS_URL,{
       method:'POST',
-      mode:'no-cors',
       headers:{'Content-Type':'text/plain'},
       body:JSON.stringify({action:'save',records}),
     });
-    showSyncStatus('✅ Sync แล้ว '+new Date().toLocaleTimeString('th-TH'),'var(--green)');
+    const data=await res.json();
+    if(data.status==='ok'){
+      showSyncStatus('✅ Sync แล้ว '+new Date().toLocaleTimeString('th-TH'),'var(--green)');
+    } else {
+      showSyncStatus('⚠️ Sync ไม่สำเร็จ','var(--red)');
+    }
   }catch(e){
     showSyncStatus('⚠️ Offline — บันทึกในเครื่องแล้ว','var(--amber)');
   }
