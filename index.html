@@ -262,6 +262,23 @@
       </select>
     </div>
     <div class="field">
+      <label>🪵 ลำดับไม้ที่เริ่ม / จำนวนเงิน</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <select id="inp-start" onchange="updateSidebar()">
+          <option value="1">ไม้ 1</option>
+          <option value="2">ไม้ 2</option>
+          <option value="3">ไม้ 3</option>
+          <option value="4">ไม้ 4</option>
+          <option value="5">ไม้ 5</option>
+        </select>
+        <input type="number" id="inp-bet-amt" min="1" placeholder="จำนวน ฿" oninput="updateSidebar()">
+      </div>
+    </div>
+    <div class="field">
+      <label>💧 ค่าน้ำจริง</label>
+      <input type="number" id="inp-odds" value="1.80" step="0.01" min="1.01" onchange="updateSidebar()">
+    </div>
+    <div class="field">
       <label>✅ จำนวนครั้งที่ชนะ</label>
       <input type="number" id="inp-w" min="0" value="0">
     </div>
@@ -269,15 +286,16 @@
       <label>❌ จำนวนครั้งที่แพ้</label>
       <input type="number" id="inp-l" min="0" value="0">
     </div>
-    <div class="field">
-      <label>⚠️ ไม้สูงสุดที่ใช้</label>
-      <select id="inp-s">
-        <option value="1">ไม้ 1 — 300 ฿</option>
-        <option value="2">ไม้ 2 — 700 ฿</option>
-        <option value="3">ไม้ 3 — 1,650 ฿</option>
-        <option value="4">ไม้ 4 — 3,800 ฿</option>
-        <option value="5">ไม้ 5 — 8,750 ฿</option>
-      </select>
+
+    <!-- STOP WIN -->
+    <div id="sw-sidebar"></div>
+    <div style="font-size:11px;color:var(--text3)">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span>กำไรวันนี้</span><span id="sw-pct">0%</span>
+      </div>
+      <div style="height:6px;background:var(--bg3);border-radius:4px;overflow:hidden">
+        <div id="sw-bar" style="height:100%;width:0%;border-radius:4px;background:var(--blue);transition:width .4s,background .4s"></div>
+      </div>
     </div>
     <div class="field">
       <label>📝 หมายเหตุ</label>
@@ -292,16 +310,6 @@
     <button class="btn-ghost" onclick="undoLast()">↩ ลบรายการล่าสุด</button>
     <button class="btn-ghost" style="color:#ef4444;border-color:rgba(239,68,68,.3)" onclick="resetAll()">🗑 ล้างข้อมูลทั้งหมด</button>
 
-    <div class="divider"></div>
-
-    <div>
-      <div class="sidebar-title" style="margin-bottom:8px">📊 Martingale</div>
-      <table class="mg-table">
-        <thead><tr><th>ไม้</th><th>เดิมพัน</th><th>สะสม</th><th>กำไร</th></tr></thead>
-        <tbody id="mg-rows"></tbody>
-      </table>
-      <div style="font-size:11px;color:var(--text3);margin-top:8px">⚠️ ทุนปลอดภัยขั้นต่ำ: 25,800 ฿</div>
-    </div>
   </div>
 
   <!-- CONTENT -->
@@ -415,14 +423,6 @@ let eqC,pnlC,sessC;
   document.getElementById('inp-date').value=today.toISOString().split('T')[0];
   document.getElementById('today-date').textContent=today.toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-  // build martingale table
-  let cum=0,rows='';
-  BETS.forEach((b,i)=>{
-    cum+=b;
-    rows+=`<tr class="${i===4?'step5':''}"><td>ไม้ ${i+1}</td><td>${b.toLocaleString()} ฿</td><td>${cum.toLocaleString()} ฿</td><td>+${Math.round(b*(ODDS-1))} ฿</td></tr>`;
-  });
-  document.getElementById('mg-rows').innerHTML=rows;
-
   // load saved data
   try{
     const saved=localStorage.getItem(STORAGE_KEY);
@@ -430,6 +430,7 @@ let eqC,pnlC,sessC;
   }catch(e){}
 
   render();
+  updateSidebar();
 })();
 
 function save(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){} }
@@ -440,8 +441,17 @@ function fmt(n,sign=false){
   return abs+' ฿';
 }
 
-function calcPnl(w,l,s){
-  return Math.round(w*BETS[0]*(ODDS-1) - l*BETS.slice(0,s).reduce((a,b)=>a+b,0));
+function calcPnl(w,l,s,startStep,odds,betAmt){
+  const curEq=records.length?records[records.length-1].equity:INIT;
+  const sb=scaleBets(curEq);
+  // ถ้ากรอกจำนวนเงินมาเอง ใช้เลย ถ้าไม่ ใช้ auto-scale
+  const startBet=betAmt||sb[(startStep||1)-1];
+  const realOdds=odds||ODDS;
+  // คำนวณ bet ทุกไม้จาก ratio ของ startBet
+  const ratio=BETS.map(b=>b/BETS[(startStep||1)-1]);
+  const profitPerWin=Math.round(startBet*(realOdds-1));
+  const lossChain=ratio.slice(0,s-(startStep||1)+1).map(r=>Math.round(startBet*r)).reduce((a,b)=>a+b,0);
+  return Math.round(w*profitPerWin - l*lossChain);
 }
 
 function recalcEquity(){
@@ -454,11 +464,14 @@ function addRecord(){
   const sess=document.getElementById('inp-sess').value;
   const w=Math.max(0,parseInt(document.getElementById('inp-w').value)||0);
   const l=Math.max(0,parseInt(document.getElementById('inp-l').value)||0);
-  const s=parseInt(document.getElementById('inp-s').value);
+  const s=parseInt(document.getElementById('inp-start').value)||1;
+  const startStep=parseInt(document.getElementById('inp-start').value)||1;
+  const odds=parseFloat(document.getElementById('inp-odds').value)||ODDS;
+  const betAmt=parseFloat(document.getElementById('inp-bet-amt').value)||0;
   const note=document.getElementById('inp-note').value.trim();
   if(!dateVal){ showMsg('กรุณาเลือกวันที่','warn'); return; }
-  const pnl=calcPnl(w,l,s);
-  const rec={date:dateVal,sess,w,l,s,pnl,equity:0,note};
+  const pnl=calcPnl(w,l,s,startStep,odds,betAmt);
+  const rec={date:dateVal,sess,w,l,s,startStep,odds,betAmt,pnl,equity:0,note};
   const idx=records.findIndex(r=>r.date===dateVal);
   if(idx>=0){ records[idx]=rec; showMsg(`✏️ อัปเดตวันที่ ${dateVal} แล้ว`,'ok'); }
   else{ records.push(rec); showMsg(`✅ บันทึกแล้ว | PnL = ${fmt(pnl,true)}`,'ok'); }
@@ -537,6 +550,8 @@ function render(){
   renderCharts();
   renderSession();
   renderAutoScale(eq);
+  renderStopWin(eq);
+  updateSidebar();
   renderTable();
 }
 
@@ -691,6 +706,37 @@ function renderAutoScale(eq){
     <b>สูตร:</b> ไม้แรก = 300 × √(ทุน ÷ 20,000) ปัดกลมทุก 50 ฿ &nbsp;|&nbsp;
     ทุนปัจจุบัน <b>${eq.toLocaleString()} ฿</b> → factor <b>${factor.toFixed(2)}×</b> → ไม้แรก <b>${scaled[0].toLocaleString()} ฿</b>
     ${!isScaled ? `&nbsp;|&nbsp; แนะนำ Scale Up เมื่อทุนถึง <b style="color:var(--amber)">~45,000 ฿</b>` : `&nbsp;|&nbsp; <span style="color:var(--green)">✅ ใช้ชุด bet นี้ได้เลย</span>`}`;
+}
+
+function updateSidebar(){
+  const startStep=parseInt(document.getElementById('inp-start').value)||1;
+  const eq=records.length?records[records.length-1].equity:INIT;
+  const sb=scaleBets(eq);
+  // ถ้าช่องจำนวนเงินว่างอยู่ ใส่ค่า auto-scale ให้เลย
+  const amtEl=document.getElementById('inp-bet-amt');
+  if(!amtEl.value) amtEl.value=sb[startStep-1];
+}
+
+function renderStopWin(eq){
+  const today=new Date().toISOString().split('T')[0];
+  const todayPnl=records.filter(r=>r.date===today).reduce((a,r)=>a+r.pnl,0);
+  const dailyTarget=Math.round(eq*0.05);
+  const pct=Math.max(0,Math.min(100,Math.round(todayPnl/dailyTarget*100)));
+  const remain=dailyTarget-todayPnl;
+
+  document.getElementById('sw-pct').textContent=pct+'%';
+  const bar=document.getElementById('sw-bar');
+  bar.style.width=pct+'%';
+  bar.style.background=pct>=100?'var(--green)':pct>=80?'var(--amber)':'var(--blue)';
+
+  const sw=document.getElementById('sw-sidebar');
+  if(todayPnl>=dailyTarget){
+    sw.innerHTML=`<div class="alert alert-ok" style="padding:8px 12px;font-size:12px"><span>🎯</span><div><b>ถึงเป้าวันนี้แล้ว!</b> +${todayPnl.toLocaleString()} ฿ (เป้า ${dailyTarget.toLocaleString()} ฿)</div></div>`;
+  } else if(pct>=80){
+    sw.innerHTML=`<div class="alert alert-warn" style="padding:8px 12px;font-size:12px"><span>⚡</span><div><b>ใกล้ถึงเป้า!</b> เหลืออีก ${remain.toLocaleString()} ฿</div></div>`;
+  } else {
+    sw.innerHTML=`<div style="font-size:11px;color:var(--text3);padding:4px 0">🎯 เป้าวันนี้ ${dailyTarget.toLocaleString()} ฿ · เหลือ ${remain.toLocaleString()} ฿</div>`;
+  }
 }
 
 function renderTable(){
