@@ -414,93 +414,84 @@
 const INIT=20000,TARGET=150000,BETS=[300,700,1650,3800,8750],ODDS=1.80,BUST=17200,WARN=25800;
 const SESS_ALL=['เช้า (06-11น)','กลางวัน (11-14น)','บ่าย (14-18น)','เย็น (18-22น)','ดึก (22-06น)'];
 const STORAGE_KEY='mm_dashboard_v1';
-const GS_URL='https://script.google.com/macros/s/AKfycbzmnAvnlVRZfw05jjPlE5PhzpYdo5e5ty8CKbTcZDu7mpUD0JwmQ4uVQpYn7pSZ7UGOLw/exec';
+const GS_URL='https://script.google.com/macros/s/AKfycbwZEkWzH9zrebARSArwthHzlDbNBwGg_ruG_M70zidsHMvIMmLqItr-rtx4sDDU3f43YQ/exec';
 
 let records=[];
 let eqC,pnlC,sessC;
-let isSyncing=false;
 
 function showSyncStatus(txt,color='var(--text3)'){
   const el=document.getElementById('sync-status');
   if(el){ el.textContent=txt; el.style.color=color; }
 }
 
-// ── JSONP helper (ไม่ติด CORS) ──
-function jsonp(url){
+// ── iframe postMessage (ไม่ติด CORS และ CSP) ──
+function gsRequest(params){
   return new Promise((resolve,reject)=>{
-    const cb='cb_'+Date.now();
-    const script=document.createElement('script');
-    script.src=url+'&callback='+cb;
-    window[cb]=function(data){
-      delete window[cb];
-      document.body.removeChild(script);
-      resolve(data);
-    };
-    script.onerror=function(){
-      delete window[cb];
-      document.body.removeChild(script);
-      reject(new Error('JSONP error'));
-    };
-    document.body.appendChild(script);
+    const iframe=document.createElement('iframe');
+    iframe.style.cssText='display:none;width:0;height:0;border:0';
+    const qs=Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
+    iframe.src=GS_URL+'?'+qs;
+    const timer=setTimeout(()=>{
+      window.removeEventListener('message',handler);
+      if(document.body.contains(iframe)) document.body.removeChild(iframe);
+      reject(new Error('timeout'));
+    },20000);
+    function handler(e){
+      if(e.data && (e.data.action==='save'||e.data.action==='load')){
+        clearTimeout(timer);
+        window.removeEventListener('message',handler);
+        if(document.body.contains(iframe)) document.body.removeChild(iframe);
+        resolve(e.data);
+      }
+    }
+    window.addEventListener('message',handler);
+    document.body.appendChild(iframe);
   });
 }
 
 function saveToSheets(){
-  // บันทึก localStorage ก่อนเสมอ
   try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){}
   showSyncStatus('⏳ กำลัง sync...','var(--amber)');
-  // ส่งผ่าน GET + JSONP (วิธีเดียวที่ไม่ติด CORS กับ Apps Script)
-  const encoded=encodeURIComponent(JSON.stringify(records));
-  const url=GS_URL+'?action=save&records='+encoded;
-  jsonp(url).then(data=>{
-    if(data && data.status==='ok'){
+  gsRequest({action:'save',records:JSON.stringify(records)})
+    .then(()=>{
       showSyncStatus('✅ Sync แล้ว '+new Date().toLocaleTimeString('th-TH'),'var(--green)');
-    } else {
-      showSyncStatus('⚠️ Sync ไม่สำเร็จ','var(--red)');
-    }
-  }).catch(()=>{
-    showSyncStatus('⚠️ Offline — บันทึกในเครื่องแล้ว','var(--amber)');
-  });
+    }).catch(()=>{
+      showSyncStatus('⚠️ Offline — บันทึกในเครื่องแล้ว','var(--amber)');
+    });
 }
 
 function loadFromSheets(){
+  try{
+    const saved=localStorage.getItem(STORAGE_KEY);
+    if(saved){ records=JSON.parse(saved); render(); updateSidebar(); }
+  }catch(e){}
   showSyncStatus('⏳ กำลังโหลด...','var(--amber)');
-  jsonp(GS_URL+'?action=load&t='+Date.now()).then(data=>{
-    if(data && data.records && data.records.length){
-      records=data.records.map(r=>({
-        date:String(r.date||'').trim(),
-        sess:r.sess||'',
-        w:parseInt(r.wins)||0,
-        l:parseInt(r.losses)||0,
-        s:parseInt(r.step)||1,
-        odds:parseFloat(r.odds)||1.80,
-        betAmt:parseFloat(r.betAmt)||0,
-        pnl:parseFloat(r.pnl)||0,
-        equity:parseFloat(r.equity)||INIT,
-        note:r.note||''
-      }));
-      records.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-      try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){}
-      showSyncStatus('✅ โหลดจาก Google Sheets แล้ว','var(--green)');
-    } else {
-      // fallback localStorage
-      try{
-        const saved=localStorage.getItem(STORAGE_KEY);
-        if(saved) records=JSON.parse(saved);
-      }catch(e){}
-      showSyncStatus('📭 ไม่มีข้อมูลใน Sheets — ใช้ข้อมูลในเครื่อง','var(--text3)');
-    }
-    render();
-    updateSidebar();
-  }).catch(()=>{
-    try{
-      const saved=localStorage.getItem(STORAGE_KEY);
-      if(saved) records=JSON.parse(saved);
-    }catch(e){}
-    showSyncStatus('⚠️ Offline — โหลดจากเครื่อง','var(--amber)');
-    render();
-    updateSidebar();
-  });
+  gsRequest({action:'load',t:Date.now()})
+    .then(data=>{
+      if(data.records && data.records.length){
+        const sr=data.records.map(r=>({
+          date:String(r.date||'').trim(), sess:r.sess||'',
+          w:parseInt(r.wins)||0, l:parseInt(r.losses)||0,
+          s:parseInt(r.step)||1, odds:parseFloat(r.odds)||1.80,
+          betAmt:parseFloat(r.betAmt)||0, pnl:parseFloat(r.pnl)||0,
+          equity:parseFloat(r.equity)||INIT, note:r.note||''
+        }));
+        sr.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+        if(sr.length>=records.length){
+          records=sr;
+          try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){}
+          showSyncStatus('✅ โหลดจาก Google Sheets แล้ว','var(--green)');
+        } else {
+          showSyncStatus('✅ ใช้ข้อมูลในเครื่อง (ใหม่กว่า)','var(--green)');
+        }
+      } else {
+        showSyncStatus('📭 Sheets ว่าง — ใช้ข้อมูลในเครื่อง','var(--text3)');
+      }
+      render(); updateSidebar();
+    }).catch(()=>{
+      showSyncStatus('⚠️ Offline — ใช้ข้อมูลในเครื่อง','var(--amber)');
+      render(); updateSidebar();
+    });
 }
 
 // ── Init ──
@@ -543,18 +534,24 @@ function addRecord(){
   const w=Math.max(0,parseInt(document.getElementById('inp-w').value)||0);
   const l=Math.max(0,parseInt(document.getElementById('inp-l').value)||0);
   const s=parseInt(document.getElementById('inp-start').value)||1;
-  const startStep=parseInt(document.getElementById('inp-start').value)||1;
   const odds=parseFloat(document.getElementById('inp-odds').value)||ODDS;
   const betAmt=parseFloat(document.getElementById('inp-bet-amt').value)||0;
   const note=document.getElementById('inp-note').value.trim();
   if(!dateVal){ showMsg('กรุณาเลือกวันที่','warn'); return; }
-  const pnl=calcPnl(w,l,s,startStep,odds,betAmt);
-  const rec={date:dateVal,sess,w,l,s,startStep,odds,betAmt,pnl,equity:0,note};
+  const pnl=calcPnl(w,l,s,s,odds,betAmt);
+  const rec={date:dateVal,sess,w,l,s,odds,betAmt,pnl,equity:0,note};
   const idx=records.findIndex(r=>r.date===dateVal);
-  if(idx>=0){ records[idx]=rec; showMsg(`✏️ อัปเดตวันที่ ${dateVal} แล้ว`,'ok'); }
-  else{ records.push(rec); showMsg(`✅ บันทึกแล้ว | PnL = ${fmt(pnl,true)}`,'ok'); }
+  if(idx>=0){
+    records[idx]=rec;
+    showMsg(`✏️ อัปเดตวันที่ ${dateVal} แล้ว`,'ok');
+  } else {
+    records.push(rec);
+    showMsg(`✅ บันทึกแล้ว | PnL = ${fmt(pnl,true)}`,'ok');
+  }
   records.sort((a,b)=>a.date.localeCompare(b.date));
   recalcEquity();
+  // บันทึก localStorage ทันทีก่อน sync
+  try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){}
   save();
   render();
 }
