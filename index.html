@@ -693,6 +693,7 @@ function renderAutoScale(eq){
     ${!isScaled ? `&nbsp;|&nbsp; แนะนำ Scale Up เมื่อทุนถึง <b style="color:var(--amber)">~45,000 ฿</b>` : `&nbsp;|&nbsp; <span style="color:var(--green)">✅ ใช้ชุด bet นี้ได้เลย</span>`}`;
 }
 
+function renderTable(){
   const tbody=document.getElementById('tbl-body');
   const empty=document.getElementById('empty-msg');
   if(!records.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
