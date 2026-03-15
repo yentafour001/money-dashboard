@@ -47,6 +47,19 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .btn-ghost{width:100%;padding:7px;border-radius:var(--radius-sm);background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Sarabun',sans-serif;font-size:12px;cursor:pointer}
 .btn-ghost:hover{background:var(--bg3)}
 .btn-danger{border-color:rgba(239,68,68,.3);color:var(--red)}
+.rbtn{padding:8px 2px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg3);cursor:pointer;text-align:center;font-family:'Sarabun',sans-serif;transition:all .15s;width:100%}
+.rbtn:hover{opacity:.85}
+.rbtn-wf{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.06)}
+.rbtn-wh{border-color:rgba(16,185,129,.2);background:rgba(16,185,129,.04)}
+.rbtn-dr{border-color:rgba(100,116,139,.3)}
+.rbtn-lh{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.04)}
+.rbtn-lf{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.06)}
+.rbtn.active{transform:scale(1.05)}
+.rbtn-wf.active{box-shadow:0 0 0 2px #10b981}
+.rbtn-wh.active{box-shadow:0 0 0 2px #6ee7b7}
+.rbtn-dr.active{box-shadow:0 0 0 2px var(--text2)}
+.rbtn-lh.active{box-shadow:0 0 0 2px var(--amber)}
+.rbtn-lf.active{box-shadow:0 0 0 2px var(--red)}
 .divider{height:1px;background:var(--border)}
 .msg-box{font-size:11px;min-height:16px;text-align:center}
 
@@ -196,21 +209,43 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
     </div>
     <div class="field">
       <label>💧 ค่าน้ำจริง</label>
-      <input type="number" id="inp-odds" value="1.80" step="0.01" min="1.01">
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>✅ ชนะ</label>
-        <input type="number" id="inp-w" min="0" value="0">
-      </div>
-      <div class="field">
-        <label>❌ แพ้</label>
-        <input type="number" id="inp-l" min="0" value="0">
-      </div>
+      <input type="number" id="inp-odds" value="1.80" step="0.01" min="1.01" oninput="updateResultBtns()">
     </div>
     <div class="field">
-      <label>📝 หมายเหตุ</label>
+      <label>📝 หมายเหตุ (ชื่อแมตช์)</label>
       <input type="text" id="inp-note" placeholder="เช่น แมนยู vs ลิเวอร์พูล">
+    </div>
+
+    <!-- RESULT BUTTONS -->
+    <div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:6px">🎯 ผลลัพธ์บิลนี้</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px">
+        <button class="rbtn rbtn-wf" onclick="selectResult('win_full')" id="btn-win_full">
+          <span style="font-size:16px">✅</span>
+          <span style="font-size:9px;color:var(--text2);display:block">ชนะเต็ม</span>
+          <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:#10b981" id="pv-win_full">+240</span>
+        </button>
+        <button class="rbtn rbtn-wh" onclick="selectResult('win_half')" id="btn-win_half">
+          <span style="font-size:16px">🟡</span>
+          <span style="font-size:9px;color:var(--text2);display:block">ชนะครึ่ง</span>
+          <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:#6ee7b7" id="pv-win_half">+120</span>
+        </button>
+        <button class="rbtn rbtn-dr" onclick="selectResult('draw')" id="btn-draw">
+          <span style="font-size:16px">⚪</span>
+          <span style="font-size:9px;color:var(--text2);display:block">เจ๊า/คืน</span>
+          <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:var(--text2)" id="pv-draw">0</span>
+        </button>
+        <button class="rbtn rbtn-lh" onclick="selectResult('lose_half')" id="btn-lose_half">
+          <span style="font-size:16px">🟠</span>
+          <span style="font-size:9px;color:var(--text2);display:block">แพ้ครึ่ง</span>
+          <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:var(--amber)" id="pv-lose_half">-150</span>
+        </button>
+        <button class="rbtn rbtn-lf" onclick="selectResult('lose_full')" id="btn-lose_full">
+          <span style="font-size:16px">🔴</span>
+          <span style="font-size:9px;color:var(--text2);display:block">แพ้เต็ม</span>
+          <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:var(--red)" id="pv-lose_full">-300</span>
+        </button>
+      </div>
     </div>
 
     <!-- STOP WIN -->
@@ -316,8 +351,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
           <thead>
             <tr>
               <th>วันที่</th><th>ช่วงเวลา</th><th>ไม้เริ่ม</th><th>Bet ฿</th>
-              <th>ค่าน้ำ</th><th>ชนะ</th><th>แพ้</th><th>WR</th>
-              <th>PnL</th><th>Equity</th><th>หมายเหตุ</th>
+              <th>ค่าน้ำ</th><th>ผลลัพธ์</th><th>PnL</th><th>Equity</th><th>หมายเหตุ</th>
             </tr>
           </thead>
           <tbody id="tbl-body"></tbody>
@@ -370,12 +404,35 @@ function updateBetHint(){
   }
 }
 
-function calcPnl(w,l,startStep,bet,odds){
-  // ชนะ = ได้กำไร bet × (odds-1)
-  const profit=Math.round(bet*(odds-1));
-  // แพ้ = เสีย bet ไม้นั้น (แค่ไม้เดียว ไม่ใช่ทั้ง series)
-  const loss=bet;
-  return Math.round(w*profit - l*loss);
+let selectedResult=null;
+const RESULT_LABELS={win_full:'✅ ชนะเต็ม',win_half:'🟡 ชนะครึ่ง',draw:'⚪ เจ๊า/คืน',lose_half:'🟠 แพ้ครึ่ง',lose_full:'🔴 แพ้เต็ม'};
+
+function calcPnlByResult(type,bet,odds){
+  const profit=bet*(odds-1);
+  if(type==='win_full')  return Math.round(profit);
+  if(type==='win_half')  return Math.round(profit/2);
+  if(type==='draw')      return 0;
+  if(type==='lose_half') return -Math.round(bet/2);
+  if(type==='lose_full') return -Math.round(bet);
+  return 0;
+}
+
+function updateResultBtns(){
+  const bet=parseFloat(document.getElementById('inp-bet').value)||300;
+  const odds=parseFloat(document.getElementById('inp-odds').value)||1.80;
+  ['win_full','win_half','draw','lose_half','lose_full'].forEach(t=>{
+    const pnl=calcPnlByResult(t,bet,odds);
+    const el=document.getElementById('pv-'+t);
+    if(el) el.textContent=(pnl>0?'+':'')+pnl.toLocaleString();
+  });
+}
+
+function selectResult(type){
+  selectedResult=type;
+  document.querySelectorAll('.rbtn').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('btn-'+type);
+  if(btn) btn.classList.add('active');
+  updateResultBtns();
 }
 
 function addEntry(){
@@ -384,27 +441,28 @@ function addEntry(){
   const startStep=parseInt(document.getElementById('inp-start').value)||1;
   const bet=parseFloat(document.getElementById('inp-bet').value)||BETS[startStep-1];
   const odds=parseFloat(document.getElementById('inp-odds').value)||ODDS;
-  const w=Math.max(0,parseInt(document.getElementById('inp-w').value)||0);
-  const l=Math.max(0,parseInt(document.getElementById('inp-l').value)||0);
   const note=document.getElementById('inp-note').value.trim();
   if(!date){ showMsg('กรุณาเลือกวันที่','warn'); return; }
-  if(w===0&&l===0){ showMsg('กรอกชนะหรือแพ้อย่างน้อย 1','warn'); return; }
+  if(!selectedResult){ showMsg('กรุณาเลือกผลลัพธ์ก่อน','warn'); return; }
 
   const prevEq=entries.length?entries[entries.length-1].equity:INIT;
-  const pnl=calcPnl(w,l,startStep,bet,odds);
+  const pnl=calcPnlByResult(selectedResult,bet,odds);
   const equity=prevEq+pnl;
+  const w=selectedResult==='win_full'?1:selectedResult==='win_half'?0.5:0;
+  const l=selectedResult==='lose_full'?1:selectedResult==='lose_half'?0.5:0;
 
-  entries.push({id:Date.now(),date,sess,startStep,bet,odds,w,l,pnl,equity,note});
+  entries.push({id:Date.now(),date,sess,startStep,bet,odds,resultType:selectedResult,w,l,pnl,equity,note});
   save();
 
-  // reset wins/losses/note ไว้กรอกต่อ
-  document.getElementById('inp-w').value=0;
-  document.getElementById('inp-l').value=0;
+  // reset
+  selectedResult=null;
+  document.querySelectorAll('.rbtn').forEach(b=>b.classList.remove('active'));
   document.getElementById('inp-note').value='';
   document.getElementById('inp-bet').dataset.auto='1';
   updateBetHint();
+  updateResultBtns();
 
-  showMsg(`✅ บันทึกแล้ว | PnL = ${fmt(pnl,true)}`,'ok');
+  showMsg(`✅ บันทึกแล้ว | ${RESULT_LABELS[selectedResult]||''} | PnL = ${fmt(pnl,true)}`,'ok');
   render();
 }
 
@@ -656,19 +714,19 @@ function renderTable(){
   let lastDate='';
 
   sorted.forEach(r=>{
-    const wr=r.w+r.l>0?Math.round(r.w/(r.w+r.l)*100)+'%':'—';
     const pc=r.pnl>=0?'b-green':'b-red';
     const d=new Date(r.date);
     const dStr=`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
     const sessShort=r.sess.split(' ')[0];
+    const resLabel=RESULT_LABELS[r.resultType]||(r.w>0?'✅ ชนะ':'🔴 แพ้');
+    const resCls=r.resultType==='win_full'||r.resultType==='win_half'?'b-green':r.resultType==='draw'?'b-gray':r.resultType==='lose_half'?'b-amber':'b-red';
 
-    // ถ้าวันใหม่ แสดง summary ของวันก่อน
     if(lastDate && r.date!==lastDate){
       const dayEntries=entries.filter(e=>e.date===lastDate);
       const dayPnl=dayEntries.reduce((a,e)=>a+e.pnl,0);
       const dayEq=dayEntries[dayEntries.length-1].equity;
       rows+=`<tr class="day-summary">
-        <td colspan="8" style="color:var(--text2);font-size:11px">สรุปวัน ${lastDate.slice(5).replace('-','/')}</td>
+        <td colspan="6" style="color:var(--text2);font-size:11px">สรุปวัน ${lastDate.slice(5).replace('-','/')}</td>
         <td><span class="badge ${dayPnl>=0?'b-green':'b-red'}">${fmt(dayPnl,true)}</span></td>
         <td style="font-family:'Space Mono',monospace;font-size:11px">${fmt(dayEq)}</td>
         <td></td>
@@ -682,22 +740,19 @@ function renderTable(){
       <td style="font-size:11px">ไม้ ${r.startStep}</td>
       <td style="font-family:'Space Mono',monospace;font-size:11px">${r.bet.toLocaleString()}</td>
       <td style="font-size:11px">${r.odds}</td>
-      <td style="color:var(--green)">${r.w}</td>
-      <td style="color:var(--red)">${r.l}</td>
-      <td style="font-size:11px">${wr}</td>
+      <td><span class="badge ${resCls}" style="font-size:9px">${resLabel}</span></td>
       <td><span class="badge ${pc}">${fmt(r.pnl,true)}</span></td>
       <td style="font-family:'Space Mono',monospace;font-size:11px">${fmt(r.equity)}</td>
       <td style="color:var(--text3);font-size:11px">${r.note||'—'}</td>
     </tr>`;
   });
 
-  // summary วันสุดท้าย
   if(lastDate){
     const dayEntries=entries.filter(e=>e.date===lastDate);
     const dayPnl=dayEntries.reduce((a,e)=>a+e.pnl,0);
     const dayEq=dayEntries[dayEntries.length-1].equity;
     rows+=`<tr class="day-summary">
-      <td colspan="8" style="color:var(--text2);font-size:11px">สรุปวัน ${lastDate.slice(5).replace('-','/')}</td>
+      <td colspan="6" style="color:var(--text2);font-size:11px">สรุปวัน ${lastDate.slice(5).replace('-','/')}</td>
       <td><span class="badge ${dayPnl>=0?'b-green':'b-red'}">${fmt(dayPnl,true)}</span></td>
       <td style="font-family:'Space Mono',monospace;font-size:11px">${fmt(dayEq)}</td>
       <td></td>
