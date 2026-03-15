@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>💰 Money Management Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -20,17 +20,14 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:4px}
 
-/* TOPBAR */
 .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .logo{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;background:linear-gradient(90deg,#3b82f6,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .topbar-sub{font-size:11px;color:var(--text3);margin-top:2px}
 .topbar-right{display:flex;gap:8px;align-items:center}
-.btn-sm{padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:'Sarabun',sans-serif;font-size:12px;cursor:pointer}
-.btn-sm:hover{background:var(--bg2);color:var(--text)}
+.btn-sm{padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:'Sarabun',sans-serif;font-size:12px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .btn-export{border-color:rgba(59,130,246,.4);color:#93c5fd}
 .btn-import{border-color:rgba(16,185,129,.4);color:#6ee7b7}
 
-/* LAYOUT */
 .main{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 53px)}
 
 /* SIDEBAR */
@@ -38,17 +35,28 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .sidebar-title{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:11px;color:var(--text2)}
-.field input,.field select{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'Sarabun',sans-serif;font-size:13px;padding:7px 10px;width:100%;outline:none}
+.field input,.field select{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'Sarabun',sans-serif;font-size:13px;padding:7px 10px;width:100%;outline:none;-webkit-appearance:none}
 .field input:focus,.field select:focus{border-color:var(--blue)}
 .field select option{background:var(--bg2)}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.btn-primary{width:100%;padding:9px;border-radius:var(--radius-sm);background:linear-gradient(135deg,#2563eb,#1d9e75);border:none;color:#fff;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.btn-primary:hover{opacity:.9}
-.btn-ghost{width:100%;padding:7px;border-radius:var(--radius-sm);background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Sarabun',sans-serif;font-size:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.btn-ghost:hover{background:var(--bg3)}
-.btn-danger{border-color:rgba(239,68,68,.3);color:var(--red)}
-.rbtn{padding:8px 2px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg3);cursor:pointer;text-align:center;font-family:'Sarabun',sans-serif;transition:all .15s;width:100%;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none}
-.rbtn:hover{opacity:.85}
+.divider{height:1px;background:var(--border)}
+.msg-box{font-size:11px;min-height:16px;text-align:center}
+
+/* RESULT BUTTONS */
+.result-label{font-size:11px;color:var(--text2);margin-bottom:6px}
+.result-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.rbtn{
+  padding:8px 2px;border-radius:var(--radius-sm);
+  border:1.5px solid var(--border);background:var(--bg3);
+  cursor:pointer;text-align:center;display:block;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+  transition:transform .1s;
+}
+.rbtn:active{transform:scale(0.95)}
+.rbtn .ri{font-size:18px;display:block;pointer-events:none}
+.rbtn .rl{font-size:9px;color:var(--text2);display:block;pointer-events:none;margin-top:2px}
+.rbtn .rp{font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;margin-top:2px;pointer-events:none}
 .rbtn-wf{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.06)}
 .rbtn-wh{border-color:rgba(16,185,129,.2);background:rgba(16,185,129,.04)}
 .rbtn-dr{border-color:rgba(100,116,139,.3)}
@@ -60,8 +68,6 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .rbtn-dr.active{box-shadow:0 0 0 2px var(--text2)}
 .rbtn-lh.active{box-shadow:0 0 0 2px var(--amber)}
 .rbtn-lf.active{box-shadow:0 0 0 2px var(--red)}
-.divider{height:1px;background:var(--border)}
-.msg-box{font-size:11px;min-height:16px;text-align:center}
 
 /* STOP WIN */
 .sw-box{border-radius:var(--radius-sm);padding:8px 12px;font-size:12px}
@@ -73,35 +79,48 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .prog-track{height:5px;background:var(--bg3);border-radius:4px;overflow:hidden}
 .prog-fill{height:100%;border-radius:4px;transition:width .4s,background .4s}
 
+/* BUTTONS */
+.btn-primary{
+  width:100%;padding:11px;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,#2563eb,#1d9e75);
+  border:none;color:#fff;font-family:'Sarabun',sans-serif;
+  font-size:14px;font-weight:600;cursor:pointer;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  display:block;
+}
+.btn-ghost{
+  width:100%;padding:8px;border-radius:var(--radius-sm);
+  background:transparent;border:1px solid var(--border);
+  color:var(--text2);font-family:'Sarabun',sans-serif;
+  font-size:12px;cursor:pointer;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  display:block;
+}
+.btn-danger{border-color:rgba(239,68,68,.3);color:var(--red)}
+
 /* CONTENT */
 .content{padding:16px 20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
-
-/* ALERT */
 .alert{border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;display:flex;align-items:flex-start;gap:8px}
 .alert-ok{background:var(--green-bg);border:1px solid rgba(16,185,129,.3);color:#6ee7b7}
 .alert-warn{background:var(--amber-bg);border:1px solid rgba(245,158,11,.3);color:#fcd34d}
 .alert-danger{background:var(--red-bg);border:1px solid rgba(239,68,68,.3);color:#fca5a5}
 .alert b{font-weight:600;display:block;margin-bottom:1px}
 
-/* KPI */
 .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
 .kpi-label{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
 .kpi-value{font-family:'Space Mono',monospace;font-size:17px;font-weight:700}
 .kpi-sub{font-size:10px;color:var(--text3);margin-top:3px}
 
-/* PROGRESS */
 .prog-section{display:flex;flex-direction:column;gap:5px}
 .prog-big-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3)}
 .prog-big-track{height:8px;background:var(--bg3);border-radius:6px;overflow:hidden}
 .prog-big-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#10b981);border-radius:6px;transition:width .6s}
 
-/* CHARTS */
 .charts-row{display:grid;grid-template-columns:3fr 2fr;gap:12px}
 .chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
-.chart-title{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:10px;letter-spacing:.3px}
+.chart-title{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:10px}
 
-/* SESSION CARDS */
 .sess-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .sess-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;text-align:center}
 .sess-name{font-size:9px;color:var(--text3);margin-bottom:5px}
@@ -109,7 +128,6 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .sess-wr{font-size:9px;color:var(--text3);margin-top:3px}
 .insight{background:var(--blue-bg);border:1px solid rgba(59,130,246,.25);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:#93c5fd;line-height:1.6}
 
-/* AUTO SCALE */
 .scale-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
 .scale-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .scale-title{font-size:11px;font-weight:600;color:var(--text2)}
@@ -117,7 +135,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .scale-badge-up{background:rgba(16,185,129,.15);color:#6ee7b7}
 .scale-badge-same{background:rgba(100,116,139,.15);color:var(--text3)}
 .scale-bets{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}
-.scale-bet{background:var(--bg3);border-radius:var(--radius-sm);padding:8px;text-align:center;border:1px solid var(--border);transition:border-color .3s}
+.scale-bet{background:var(--bg3);border-radius:var(--radius-sm);padding:8px;text-align:center;border:1px solid var(--border)}
 .scale-bet.changed{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.05)}
 .scale-bet-lbl{font-size:9px;color:var(--text3);margin-bottom:3px}
 .scale-bet-val{font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
@@ -129,16 +147,15 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .scale-formula{background:var(--bg3);border-radius:var(--radius-sm);padding:8px 12px;font-size:11px;color:var(--text3);line-height:1.6;border-left:3px solid rgba(59,130,246,.5)}
 .scale-formula b{color:var(--text2)}
 
-/* TABLE */
 .table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 .table-header{padding:12px 14px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text2)}
 .table-scroll{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
-thead th{background:var(--bg3);padding:8px 12px;text-align:left;font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
-tbody td{padding:8px 12px;border-top:1px solid var(--border);vertical-align:middle}
+thead th{background:var(--bg3);padding:8px 10px;text-align:left;font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+tbody td{padding:8px 10px;border-top:1px solid var(--border);vertical-align:middle}
 tbody tr:hover td{background:rgba(255,255,255,0.02)}
-.day-summary td{background:rgba(59,130,246,0.05);font-weight:600;border-top:2px solid rgba(59,130,246,.2)}
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.day-row td{background:rgba(59,130,246,0.05);font-weight:600;border-top:2px solid rgba(59,130,246,.2)}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
 .b-green{background:rgba(16,185,129,.15);color:#6ee7b7}
 .b-red{background:rgba(239,68,68,.15);color:#fca5a5}
 .b-amber{background:rgba(245,158,11,.15);color:#fcd34d}
@@ -146,7 +163,6 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
 .b-gray{background:rgba(100,116,139,.15);color:var(--text2)}
 .empty{padding:32px;text-align:center;color:var(--text3);font-size:13px}
 
-/* hidden file input */
 #import-file{display:none}
 
 @media(max-width:900px){
@@ -175,7 +191,6 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
 </div>
 
 <div class="main">
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-title">📋 บันทึกผล</div>
 
@@ -193,7 +208,6 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
         <option>ดึก (22-06น)</option>
       </select>
     </div>
-
     <div class="field">
       <label>🪵 ไม้ที่เริ่ม / จำนวนเงิน</label>
       <div class="field-row">
@@ -204,12 +218,12 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
           <option value="4">ไม้ 4</option>
           <option value="5">ไม้ 5</option>
         </select>
-        <input type="number" id="inp-bet" min="1" placeholder="฿">
+        <input type="number" id="inp-bet" min="1" placeholder="฿" oninput="updatePnlPreview()">
       </div>
     </div>
     <div class="field">
       <label>💧 ค่าน้ำจริง</label>
-      <input type="number" id="inp-odds" value="1.80" step="0.01" min="1.01" oninput="updateResultBtns()">
+      <input type="number" id="inp-odds" value="1.80" step="0.01" min="1.01" oninput="updatePnlPreview()">
     </div>
     <div class="field">
       <label>📝 หมายเหตุ (ชื่อแมตช์)</label>
@@ -218,37 +232,36 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
 
     <!-- RESULT BUTTONS -->
     <div>
-      <div style="font-size:11px;color:var(--text2);margin-bottom:6px">🎯 ผลลัพธ์บิลนี้</div>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px">
-        <div class="rbtn rbtn-wf" ontouchstart="selectResult('win_full')" onclick="selectResult('win_full')" id="btn-win_full">
-          <span style="font-size:16px">✅</span>
-          <span style="font-size:9px;color:var(--text2);display:block">ชนะเต็ม</span>
-          <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:#10b981" id="pv-win_full">+240</span>
+      <div class="result-label">🎯 ผลลัพธ์บิลนี้</div>
+      <div class="result-grid" id="result-grid">
+        <div class="rbtn rbtn-wf" id="btn-win_full" onclick="selectResult('win_full')">
+          <span class="ri">✅</span>
+          <span class="rl">ชนะเต็ม</span>
+          <span class="rp" id="pv-win_full" style="color:#10b981">+240</span>
         </div>
-        <div class="rbtn rbtn-wh" ontouchstart="selectResult('win_half')" onclick="selectResult('win_half')" id="btn-win_half">
-          <span style="font-size:16px">🟡</span>
-          <span style="font-size:9px;color:var(--text2);display:block">ชนะครึ่ง</span>
-          <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:#6ee7b7" id="pv-win_half">+120</span>
+        <div class="rbtn rbtn-wh" id="btn-win_half" onclick="selectResult('win_half')">
+          <span class="ri">🟡</span>
+          <span class="rl">ชนะครึ่ง</span>
+          <span class="rp" id="pv-win_half" style="color:#6ee7b7">+120</span>
         </div>
-        <div class="rbtn rbtn-dr" ontouchstart="selectResult('draw')" onclick="selectResult('draw')" id="btn-draw">
-          <span style="font-size:16px">⚪</span>
-          <span style="font-size:9px;color:var(--text2);display:block">เจ๊า/คืน</span>
-          <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:var(--text2)" id="pv-draw">0</span>
+        <div class="rbtn rbtn-dr" id="btn-draw" onclick="selectResult('draw')">
+          <span class="ri">⚪</span>
+          <span class="rl">เจ๊า/คืน</span>
+          <span class="rp" id="pv-draw" style="color:var(--text2)">0</span>
         </div>
-        <div class="rbtn rbtn-lh" ontouchstart="selectResult('lose_half')" onclick="selectResult('lose_half')" id="btn-lose_half">
-          <span style="font-size:16px">🟠</span>
-          <span style="font-size:9px;color:var(--text2);display:block">แพ้ครึ่ง</span>
-          <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:var(--amber)" id="pv-lose_half">-150</span>
+        <div class="rbtn rbtn-lh" id="btn-lose_half" onclick="selectResult('lose_half')">
+          <span class="ri">🟠</span>
+          <span class="rl">แพ้ครึ่ง</span>
+          <span class="rp" id="pv-lose_half" style="color:var(--amber)">-150</span>
         </div>
-        <div class="rbtn rbtn-lf" ontouchstart="selectResult('lose_full')" onclick="selectResult('lose_full')" id="btn-lose_full">
-          <span style="font-size:16px">🔴</span>
-          <span style="font-size:9px;color:var(--text2);display:block">แพ้เต็ม</span>
-          <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:var(--red)" id="pv-lose_full">-300</span>
+        <div class="rbtn rbtn-lf" id="btn-lose_full" onclick="selectResult('lose_full')">
+          <span class="ri">🔴</span>
+          <span class="rl">แพ้เต็ม</span>
+          <span class="rp" id="pv-lose_full" style="color:var(--red)">-300</span>
         </div>
       </div>
     </div>
 
-    <!-- STOP WIN -->
     <div id="sw-box" class="sw-box sw-none">—</div>
     <div class="prog-wrap">
       <div class="prog-labels">
@@ -267,11 +280,9 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
     <button class="btn-ghost btn-danger" onclick="resetAll()">🗑 ล้างข้อมูลทั้งหมด</button>
   </div>
 
-  <!-- CONTENT -->
   <div class="content">
     <div id="alert-box"></div>
 
-    <!-- KPI -->
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-label">Equity</div>
@@ -295,24 +306,22 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
       </div>
       <div class="kpi-card">
         <div class="kpi-label">เหลือถึงเป้า</div>
-        <div class="kpi-value" id="k-rem" style="color:var(--amber)">130,000 ฿</div>
+        <div class="kpi-value" id="k-rem" style="color:var(--amber)">150,000 ฿</div>
         <div class="kpi-sub">เป้า 170,000 ฿</div>
       </div>
     </div>
 
-    <!-- PROGRESS -->
     <div class="prog-section">
       <div class="prog-big-labels">
         <span>ทุนตั้งต้น 20,000 ฿</span>
         <span id="prog-pct">0%</span>
-        <span>เป้าหมาย 150,000 ฿</span>
+        <span>เป้าหมาย 170,000 ฿</span>
       </div>
       <div class="prog-big-track">
         <div class="prog-big-fill" id="prog" style="width:0%"></div>
       </div>
     </div>
 
-    <!-- CHARTS -->
     <div class="charts-row">
       <div class="chart-card">
         <div class="chart-title">📈 EQUITY CURVE vs เป้าหมาย</div>
@@ -324,18 +333,16 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
       </div>
     </div>
 
-    <!-- SESSION -->
     <div class="chart-card">
-      <div class="chart-title">⏰ วิเคราะห์ช่วงเวลา — PnL vs Win Rate</div>
+      <div class="chart-title">⏰ วิเคราะห์ช่วงเวลา</div>
       <div style="position:relative;height:160px"><canvas id="sessChart"></canvas></div>
     </div>
     <div class="sess-grid" id="sess-cards"></div>
     <div id="sess-tip"></div>
 
-    <!-- AUTO SCALE -->
     <div class="scale-panel">
       <div class="scale-header">
-        <div class="scale-title">📐 Auto-Scale Bet — ปรับ Bet ตามทุนอัตโนมัติ</div>
+        <div class="scale-title">📐 Auto-Scale Bet</div>
         <span class="scale-badge scale-badge-same" id="scale-badge">ระดับเดิม</span>
       </div>
       <div class="scale-bets" id="scale-bets"></div>
@@ -343,31 +350,33 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
       <div class="scale-formula" id="scale-formula"></div>
     </div>
 
-    <!-- TABLE -->
     <div class="table-wrap">
       <div class="table-header">📋 ประวัติทุกเกม</div>
       <div class="table-scroll">
         <table>
           <thead>
             <tr>
-              <th>วันที่</th><th>ช่วงเวลา</th><th>ไม้เริ่ม</th><th>Bet ฿</th>
-              <th>ค่าน้ำ</th><th>ผลลัพธ์</th><th>PnL</th><th>Equity</th><th>หมายเหตุ</th>
+              <th>วันที่</th><th>เวลา</th><th>ไม้</th><th>Bet</th>
+              <th>ค่าน้ำ</th><th>ผล</th><th>PnL</th><th>Equity</th><th>หมายเหตุ</th>
             </tr>
           </thead>
           <tbody id="tbl-body"></tbody>
         </table>
-        <div class="empty" id="empty-msg">ยังไม่มีข้อมูล — กรอกผลแล้วกด บันทึกเกม</div>
+        <div class="empty" id="empty-msg">ยังไม่มีข้อมูล — เลือกผลแล้วกด บันทึกเกม</div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const INIT=20000,TARGET=170000,BETS=[300,700,1650,3800,8750],ODDS=1.80,BUST=17200,WARN=25800;
+const INIT=20000, TARGET=170000, BETS=[300,700,1650,3800,8750], ODDS=1.80, BUST=17200, WARN=25800;
 const SESS_ALL=['เช้า (06-11น)','กลางวัน (11-14น)','บ่าย (14-18น)','เย็น (18-22น)','ดึก (22-06น)'];
 const KEY='mm_v2';
+const RES_LABEL={win_full:'✅ ชนะเต็ม',win_half:'🟡 ชนะครึ่ง',draw:'⚪ เจ๊า',lose_half:'🟠 แพ้ครึ่ง',lose_full:'🔴 แพ้เต็ม'};
+const RES_CLS={win_full:'b-green',win_half:'b-green',draw:'b-gray',lose_half:'b-amber',lose_full:'b-red'};
 
-let entries=[]; // แต่ละเกม
+let entries=[];
+let selectedResult=null;
 let eqC,pnlC,sessC;
 
 // ── INIT ──
@@ -376,10 +385,13 @@ let eqC,pnlC,sessC;
   document.getElementById('today-date').textContent=new Date().toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
   try{ const s=localStorage.getItem(KEY); if(s) entries=JSON.parse(s); }catch(e){}
   updateBetHint();
+  updatePnlPreview();
   render();
 })();
 
-function save(){ try{ localStorage.setItem(KEY,JSON.stringify(entries)); }catch(e){} }
+function save(){
+  try{ localStorage.setItem(KEY,JSON.stringify(entries)); }catch(e){}
+}
 
 function fmt(n,sign=false){
   const a=Math.abs(Math.round(n)).toLocaleString('th-TH');
@@ -387,7 +399,6 @@ function fmt(n,sign=false){
 }
 
 function scaleBets(cap){
-  // ถ้าทุนต่ำกว่าหรือเท่ากับ 20,000 ใช้ bet ตั้งต้นเสมอ ไม่ลดลงอีก
   if(cap<=INIT) return [...BETS];
   const f=Math.sqrt(cap/INIT);
   return BETS.map(b=>Math.max(b,Math.round(b*f/50)*50));
@@ -402,12 +413,10 @@ function updateBetHint(){
     betEl.value=sb[step-1];
     betEl.dataset.auto='1';
   }
+  updatePnlPreview();
 }
 
-let selectedResult=null;
-const RESULT_LABELS={win_full:'✅ ชนะเต็ม',win_half:'🟡 ชนะครึ่ง',draw:'⚪ เจ๊า/คืน',lose_half:'🟠 แพ้ครึ่ง',lose_full:'🔴 แพ้เต็ม'};
-
-function calcPnlByResult(type,bet,odds){
+function calcPnl(type,bet,odds){
   const profit=bet*(odds-1);
   if(type==='win_full')  return Math.round(profit);
   if(type==='win_half')  return Math.round(profit/2);
@@ -417,23 +426,28 @@ function calcPnlByResult(type,bet,odds){
   return 0;
 }
 
-function updateResultBtns(){
+function updatePnlPreview(){
   const bet=parseFloat(document.getElementById('inp-bet').value)||300;
-  const odds=parseFloat(document.getElementById('inp-odds').value)||1.80;
-  ['win_full','win_half','draw','lose_half','lose_full'].forEach(t=>{
-    const pnl=calcPnlByResult(t,bet,odds);
-    const el=document.getElementById('pv-'+t);
+  const odds=parseFloat(document.getElementById('inp-odds').value)||ODDS;
+  const map={
+    win_full:{id:'pv-win_full',color:'#10b981'},
+    win_half:{id:'pv-win_half',color:'#6ee7b7'},
+    draw:{id:'pv-draw',color:'var(--text2)'},
+    lose_half:{id:'pv-lose_half',color:'var(--amber)'},
+    lose_full:{id:'pv-lose_full',color:'var(--red)'},
+  };
+  Object.keys(map).forEach(t=>{
+    const pnl=calcPnl(t,bet,odds);
+    const el=document.getElementById(map[t].id);
     if(el) el.textContent=(pnl>0?'+':'')+pnl.toLocaleString();
   });
 }
 
-function selectResult(type,e){
-  if(e && e.type==='touchstart') e.preventDefault();
+function selectResult(type){
   selectedResult=type;
   document.querySelectorAll('.rbtn').forEach(b=>b.classList.remove('active'));
   const btn=document.getElementById('btn-'+type);
   if(btn) btn.classList.add('active');
-  updateResultBtns();
 }
 
 function addEntry(){
@@ -443,16 +457,15 @@ function addEntry(){
   const bet=parseFloat(document.getElementById('inp-bet').value)||BETS[startStep-1];
   const odds=parseFloat(document.getElementById('inp-odds').value)||ODDS;
   const note=document.getElementById('inp-note').value.trim();
+
   if(!date){ showMsg('กรุณาเลือกวันที่','warn'); return; }
   if(!selectedResult){ showMsg('กรุณาเลือกผลลัพธ์ก่อน','warn'); return; }
 
   const prevEq=entries.length?entries[entries.length-1].equity:INIT;
-  const pnl=calcPnlByResult(selectedResult,bet,odds);
+  const pnl=calcPnl(selectedResult,bet,odds);
   const equity=prevEq+pnl;
-  const w=selectedResult==='win_full'?1:selectedResult==='win_half'?0.5:0;
-  const l=selectedResult==='lose_full'?1:selectedResult==='lose_half'?0.5:0;
 
-  entries.push({id:Date.now(),date,sess,startStep,bet,odds,resultType:selectedResult,w,l,pnl,equity,note});
+  entries.push({id:Date.now(),date,sess,startStep,bet,odds,result:selectedResult,pnl,equity,note});
   save();
 
   // reset
@@ -461,9 +474,8 @@ function addEntry(){
   document.getElementById('inp-note').value='';
   document.getElementById('inp-bet').dataset.auto='1';
   updateBetHint();
-  updateResultBtns();
 
-  showMsg(`✅ บันทึกแล้ว | ${RESULT_LABELS[selectedResult]||''} | PnL = ${fmt(pnl,true)}`,'ok');
+  showMsg('✅ บันทึกแล้ว | PnL = '+fmt(pnl,true),'ok');
   render();
 }
 
@@ -474,7 +486,7 @@ function undoLast(){
 }
 
 function resetAll(){
-  if(!confirm('⚠️ ล้างข้อมูลทั้งหมด?\nไม่สามารถย้อนกลับได้')) return;
+  if(!confirm('⚠️ ล้างข้อมูลทั้งหมด?')) return;
   entries=[];
   try{ localStorage.removeItem(KEY); }catch(e){}
   showMsg('🗑 ล้างแล้ว','warn');
@@ -483,13 +495,12 @@ function resetAll(){
 
 function showMsg(txt,type='ok'){
   const el=document.getElementById('msg');
-  el.style.color=type==='ok'?'var(--green)':type==='warn'?'var(--amber)':'var(--red)';
+  el.style.color=type==='ok'?'var(--green)':'var(--amber)';
   el.textContent=txt;
   clearTimeout(el._t);
   el._t=setTimeout(()=>el.textContent='',4000);
 }
 
-// ── EXPORT / IMPORT ──
 function exportData(){
   const blob=new Blob([JSON.stringify(entries,null,2)],{type:'application/json'});
   const a=document.createElement('a');
@@ -505,35 +516,29 @@ function importData(e){
   reader.onload=function(ev){
     try{
       const data=JSON.parse(ev.target.result);
-      if(Array.isArray(data)){
-        entries=data;
-        save(); render();
-        showMsg('✅ Import สำเร็จ '+data.length+' รายการ','ok');
-      }
+      if(Array.isArray(data)){ entries=data; save(); render(); showMsg('✅ Import '+data.length+' รายการ','ok'); }
     }catch(err){ showMsg('❌ ไฟล์ไม่ถูกต้อง','warn'); }
   };
   reader.readAsText(file);
   e.target.value='';
 }
 
-// ── RENDER ──
 function render(){
   const eq=entries.length?entries[entries.length-1].equity:INIT;
   const totalPnl=eq-INIT;
   const pct=Math.max(0,Math.min(100,Math.round((eq-INIT)/(TARGET-INIT)*100)));
-  const wins=entries.reduce((a,r)=>a+r.w,0);
-  const losses=entries.reduce((a,r)=>a+r.l,0);
-  const wr=wins+losses>0?Math.round(wins/(wins+losses)*100):null;
+  const wins=entries.filter(r=>r.result==='win_full').length + entries.filter(r=>r.result==='win_half').length*0.5;
+  const losses=entries.filter(r=>r.result==='lose_full').length + entries.filter(r=>r.result==='lose_half').length*0.5;
+  const total=entries.length;
+  const wr=total>0?Math.round(wins/total*100):null;
   const days=[...new Set(entries.map(r=>r.date))].length;
   const can=Math.floor(eq/BUST);
 
-  // KPIs
+  // KPI
   const eqEl=document.getElementById('k-eq');
-  eqEl.textContent=fmt(eq);
-  eqEl.style.color=eq>=INIT?'var(--green)':'var(--red)';
+  eqEl.textContent=fmt(eq); eqEl.style.color=eq>=INIT?'var(--green)':'var(--red)';
   const pnlEl=document.getElementById('k-pnl');
-  pnlEl.textContent=fmt(totalPnl,true);
-  pnlEl.style.color=totalPnl>=0?'var(--green)':'var(--red)';
+  pnlEl.textContent=fmt(totalPnl,true); pnlEl.style.color=totalPnl>=0?'var(--green)':'var(--red)';
   document.getElementById('k-prog').textContent='Progress '+pct+'%';
   const wrEl=document.getElementById('k-wr');
   wrEl.textContent=wr!==null?wr+'%':'—';
@@ -547,16 +552,12 @@ function render(){
 
   // Alert
   let alertHtml='';
-  if(eq<=BUST){
-    alertHtml=`<div class="alert alert-danger"><span>🚨</span><div><b>อันตราย — ทุนร่อยหรอวิกฤต!</b>ทุน ${fmt(eq)} เหลือน้อยกว่าความเสี่ยงสูงสุด 1 series — ควรหยุดเล่นทันที</div></div>`;
-  } else if(eq<=WARN){
-    alertHtml=`<div class="alert alert-warn"><span>⚠️</span><div><b>เตือน — ทุนเริ่มน้อย</b>ทุน ${fmt(eq)} รองรับไม้ 5 ได้ ${can} ครั้ง — แนะนำลด session</div></div>`;
-  } else {
-    alertHtml=`<div class="alert alert-ok"><span>✅</span><div><b>ทุนปลอดภัย</b> รองรับ series ไม้ 5 ได้ ${can} ครั้ง</div></div>`;
-  }
+  if(eq<=BUST) alertHtml=`<div class="alert alert-danger"><span>🚨</span><div><b>อันตราย!</b>ทุน ${fmt(eq)} ร่อยหรอ — ควรหยุดทันที</div></div>`;
+  else if(eq<=WARN) alertHtml=`<div class="alert alert-warn"><span>⚠️</span><div><b>เตือน — ทุนเริ่มน้อย</b>รองรับไม้ 5 ได้ ${can} ครั้ง</div></div>`;
+  else alertHtml=`<div class="alert alert-ok"><span>✅</span><div><b>ทุนปลอดภัย</b> รองรับไม้ 5 ได้ ${can} ครั้ง</div></div>`;
   document.getElementById('alert-box').innerHTML=alertHtml;
 
-  // Stop Win (วันนี้)
+  // Stop Win
   const today=new Date().toISOString().split('T')[0];
   const todayPnl=entries.filter(r=>r.date===today).reduce((a,r)=>a+r.pnl,0);
   const dailyTarget=Math.round(eq*0.05);
@@ -568,23 +569,22 @@ function render(){
   const swBox=document.getElementById('sw-box');
   if(todayPnl>=dailyTarget){
     swBox.className='sw-box sw-ok';
-    swBox.innerHTML=`🎯 <b>ถึงเป้าวันนี้แล้ว!</b> +${todayPnl.toLocaleString()} ฿`;
+    swBox.innerHTML='🎯 <b>ถึงเป้าวันนี้!</b> +'+todayPnl.toLocaleString()+' ฿';
   } else if(swPct>=80){
     swBox.className='sw-box sw-warn';
-    swBox.innerHTML=`⚡ <b>ใกล้ถึงเป้า!</b> เหลืออีก ${(dailyTarget-todayPnl).toLocaleString()} ฿`;
+    swBox.innerHTML='⚡ <b>ใกล้ถึงเป้า!</b> เหลือ '+(dailyTarget-todayPnl).toLocaleString()+' ฿';
   } else {
     swBox.className='sw-box sw-none';
-    swBox.innerHTML=`🎯 เป้าวันนี้ ${dailyTarget.toLocaleString()} ฿ · กำไรแล้ว ${todayPnl.toLocaleString()} ฿`;
+    swBox.innerHTML='🎯 เป้าวันนี้ '+dailyTarget.toLocaleString()+' ฿ · ได้แล้ว '+todayPnl.toLocaleString()+' ฿';
   }
 
-  renderCharts(eq);
+  renderCharts();
   renderSession();
   renderAutoScale(eq);
   renderTable();
 }
 
-function renderCharts(eq){
-  // group by date
+function renderCharts(){
   const dateMap={};
   entries.forEach(r=>{
     if(!dateMap[r.date]) dateMap[r.date]={pnl:0,equity:r.equity};
@@ -592,7 +592,7 @@ function renderCharts(eq){
     dateMap[r.date].equity=r.equity;
   });
   const dates=Object.keys(dateMap).sort();
-  const eqLabels=['เริ่มต้น',...dates.map(d=>d.slice(5).replace('-','/'))];
+  const eqLabels=['เริ่ม',...dates.map(d=>d.slice(5).replace('-','/'))];
   const eqVals=[INIT,...dates.map(d=>dateMap[d].equity)];
   const pnlVals=dates.map(d=>dateMap[d].pnl);
 
@@ -600,9 +600,9 @@ function renderCharts(eq){
   eqC=new Chart(document.getElementById('eqChart'),{
     type:'line',
     data:{labels:eqLabels,datasets:[
-      {label:'Equity',data:eqVals,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.07)',fill:true,tension:0.35,pointRadius:4,pointBackgroundColor:'#3b82f6',pointBorderColor:'#0a0f1a',pointBorderWidth:2},
-      {label:'เป้าหมาย',data:eqLabels.map(()=>TARGET),borderColor:'#10b981',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false},
-      {label:'อันตราย',data:eqLabels.map(()=>BUST),borderColor:'#ef4444',borderDash:[3,3],borderWidth:1,pointRadius:0,fill:false},
+      {data:eqVals,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.07)',fill:true,tension:0.35,pointRadius:4,pointBackgroundColor:'#3b82f6',pointBorderColor:'#0a0f1a',pointBorderWidth:2},
+      {data:eqLabels.map(()=>TARGET),borderColor:'#10b981',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false},
+      {data:eqLabels.map(()=>BUST),borderColor:'#ef4444',borderDash:[3,3],borderWidth:1,pointRadius:0,fill:false},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false}},
@@ -624,19 +624,25 @@ function renderCharts(eq){
 
 function renderSession(){
   const map={};
-  SESS_ALL.forEach(s=>map[s]={pnl:0,w:0,l:0,n:0});
-  entries.forEach(r=>{ if(map[r.sess]){map[r.sess].pnl+=r.pnl;map[r.sess].w+=r.w;map[r.sess].l+=r.l;map[r.sess].n++;} });
-  const active=SESS_ALL.filter(s=>map[s].n>0);
+  SESS_ALL.forEach(s=>map[s]={pnl:0,wins:0,total:0});
+  entries.forEach(r=>{
+    if(map[r.sess]){
+      map[r.sess].pnl+=r.pnl;
+      map[r.sess].total++;
+      if(r.result==='win_full'||r.result==='win_half') map[r.sess].wins++;
+    }
+  });
+  const active=SESS_ALL.filter(s=>map[s].total>0);
   const hasData=active.length>0;
   const sPnl=active.map(s=>map[s].pnl);
-  const sWr=active.map(s=>{const d=map[s];return d.w+d.l>0?Math.round(d.w/(d.w+d.l)*100):0;});
+  const sWr=active.map(s=>map[s].total>0?Math.round(map[s].wins/map[s].total*100):0);
 
   if(sessC) sessC.destroy();
   sessC=new Chart(document.getElementById('sessChart'),{
     type:'bar',
     data:{labels:hasData?active:['ยังไม่มีข้อมูล'],datasets:[
-      {label:'PnL รวม',data:hasData?sPnl:[0],backgroundColor:sPnl.map(v=>v>=0?'rgba(16,185,129,0.7)':'rgba(239,68,68,0.7)'),borderRadius:4,yAxisID:'y'},
-      {label:'Win Rate %',data:hasData?sWr:[0],type:'line',borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.1)',pointBackgroundColor:'#f59e0b',pointRadius:4,yAxisID:'y2',tension:0.3},
+      {label:'PnL',data:hasData?sPnl:[0],backgroundColor:sPnl.map(v=>v>=0?'rgba(16,185,129,0.7)':'rgba(239,68,68,0.7)'),borderRadius:4,yAxisID:'y'},
+      {label:'WR%',data:hasData?sWr:[0],type:'line',borderColor:'#f59e0b',pointBackgroundColor:'#f59e0b',pointRadius:4,yAxisID:'y2',tension:0.3},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{position:'top',labels:{color:'#94a3b8',font:{size:10},boxWidth:8,padding:10}}},
@@ -647,12 +653,12 @@ function renderSession(){
 
   document.getElementById('sess-cards').innerHTML=SESS_ALL.map(s=>{
     const d=map[s];
-    const clr=!d.n?'var(--text3)':d.pnl>=0?'var(--green)':'var(--red)';
-    const wr=d.w+d.l>0?Math.round(d.w/(d.w+d.l)*100):null;
+    const clr=!d.total?'var(--text3)':d.pnl>=0?'var(--green)':'var(--red)';
+    const wr=d.total>0?Math.round(d.wins/d.total*100):null;
     return `<div class="sess-card">
       <div class="sess-name">${s.split(' ')[0]}</div>
-      <div class="sess-pnl" style="color:${clr}">${d.n?fmt(d.pnl,true):'—'}</div>
-      <div class="sess-wr">${wr!==null?'WR '+wr+'% · '+d.n+'เกม':'ยังไม่มีข้อมูล'}</div>
+      <div class="sess-pnl" style="color:${clr}">${d.total?fmt(d.pnl,true):'—'}</div>
+      <div class="sess-wr">${wr!==null?'WR '+wr+'% · '+d.total+'เกม':'ยังไม่มีข้อมูล'}</div>
     </div>`;
   }).join('');
 
@@ -660,9 +666,7 @@ function renderSession(){
     const best=active[sPnl.indexOf(Math.max(...sPnl))];
     const worst=active[sPnl.indexOf(Math.min(...sPnl))];
     document.getElementById('sess-tip').innerHTML=`<div class="insight">
-      💡 <strong>ช่วงที่ดีสุด:</strong> <span style="color:var(--green)">${best}</span>
-      &nbsp;·&nbsp; <strong>ช่วงที่แย่สุด:</strong> <span style="color:var(--red)">${worst}</span>
-      — พิจารณาลด stake ในช่วง <strong>${worst}</strong>
+      💡 <b>ช่วงที่ดีสุด:</b> <span style="color:var(--green)">${best}</span> · <b>ช่วงที่แย่สุด:</b> <span style="color:var(--red)">${worst}</span>
     </div>`;
   } else {
     document.getElementById('sess-tip').innerHTML='';
@@ -672,7 +676,7 @@ function renderSession(){
 function renderAutoScale(eq){
   const scaled=scaleBets(eq);
   const factor=Math.sqrt(eq/INIT);
-  const isScaled=factor>=1.15;
+  const isScaled=factor>1.01;
   const totalRisk=scaled.reduce((a,b)=>a+b,0);
   const profitPerWin=Math.round(scaled[0]*(ODDS-1));
   const safetyRatio=(eq/totalRisk).toFixed(1);
@@ -680,15 +684,14 @@ function renderAutoScale(eq){
 
   const badge=document.getElementById('scale-badge');
   badge.className='scale-badge '+(isScaled?'scale-badge-up':'scale-badge-same');
-  badge.textContent=isScaled?'⬆ Scale Up แนะนำ':'ระดับเดิม';
+  badge.textContent=isScaled?'⬆ Scale Up':'ระดับเดิม';
 
   document.getElementById('scale-bets').innerHTML=scaled.map((b,i)=>{
     const diff=b-BETS[i];
-    const changed=diff!==0;
-    return `<div class="scale-bet ${changed?'changed':''}">
+    return `<div class="scale-bet ${diff>0?'changed':''}">
       <div class="scale-bet-lbl">ไม้ ${i+1}</div>
       <div class="scale-bet-val">${b.toLocaleString()}</div>
-      <div class="scale-bet-diff" style="color:${changed?'var(--green)':'var(--text3)'}">${changed?'+'+diff.toLocaleString():'เดิม'}</div>
+      <div class="scale-bet-diff" style="color:${diff>0?'var(--green)':'var(--text3)'}">${diff>0?'+'+diff.toLocaleString():'เดิม'}</div>
     </div>`;
   }).join('');
 
@@ -698,9 +701,9 @@ function renderAutoScale(eq){
     <div class="scale-info-item"><div class="scale-info-lbl">Safety Ratio</div><div class="scale-info-val" style="color:${parseFloat(safetyRatio)>=1.5?'var(--green)':'var(--amber)'}">${safetyRatio}× (${canCover} ครั้ง)</div></div>`;
 
   document.getElementById('scale-formula').innerHTML=`
-    <b>สูตร:</b> ไม้แรก = 300 × √(ทุน ÷ 20,000) &nbsp;|&nbsp;
+    <b>สูตร:</b> ไม้แรก = 300 × √(ทุน ÷ 20,000) |
     ทุน ${eq.toLocaleString()} ฿ → factor <b>${factor.toFixed(2)}×</b> → ไม้แรก <b>${scaled[0].toLocaleString()} ฿</b>
-    ${!isScaled?'&nbsp;|&nbsp; แนะนำ Scale Up เมื่อทุนถึง <b style="color:var(--amber)">~45,000 ฿</b>':'&nbsp;|&nbsp; <span style="color:var(--green)">✅ ใช้ชุด bet นี้ได้เลย</span>'}`;
+    ${!isScaled?'| แนะนำ Scale Up เมื่อทุนถึง <b style="color:var(--amber)">~45,000 ฿</b>':'| <span style="color:var(--green)">✅ ใช้ชุด bet นี้ได้เลย</span>'}`;
 }
 
 function renderTable(){
@@ -709,25 +712,17 @@ function renderTable(){
   if(!entries.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
   empty.style.display='none';
 
-  // group by date เพื่อแสดง summary row
   const sorted=[...entries].reverse();
   let rows='';
   let lastDate='';
 
   sorted.forEach(r=>{
-    const pc=r.pnl>=0?'b-green':'b-red';
-    const d=new Date(r.date);
-    const dStr=`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
-    const sessShort=r.sess.split(' ')[0];
-    const resLabel=RESULT_LABELS[r.resultType]||(r.w>0?'✅ ชนะ':'🔴 แพ้');
-    const resCls=r.resultType==='win_full'||r.resultType==='win_half'?'b-green':r.resultType==='draw'?'b-gray':r.resultType==='lose_half'?'b-amber':'b-red';
-
     if(lastDate && r.date!==lastDate){
-      const dayEntries=entries.filter(e=>e.date===lastDate);
-      const dayPnl=dayEntries.reduce((a,e)=>a+e.pnl,0);
-      const dayEq=dayEntries[dayEntries.length-1].equity;
-      rows+=`<tr class="day-summary">
-        <td colspan="6" style="color:var(--text2);font-size:11px">สรุปวัน ${lastDate.slice(5).replace('-','/')}</td>
+      const dayE=entries.filter(e=>e.date===lastDate);
+      const dayPnl=dayE.reduce((a,e)=>a+e.pnl,0);
+      const dayEq=dayE[dayE.length-1].equity;
+      rows+=`<tr class="day-row">
+        <td colspan="6" style="font-size:11px;color:var(--text2)">📅 สรุป ${lastDate.slice(5).replace('-','/')}</td>
         <td><span class="badge ${dayPnl>=0?'b-green':'b-red'}">${fmt(dayPnl,true)}</span></td>
         <td style="font-family:'Space Mono',monospace;font-size:11px">${fmt(dayEq)}</td>
         <td></td>
@@ -735,25 +730,33 @@ function renderTable(){
     }
     lastDate=r.date;
 
+    const d=new Date(r.date);
+    const dStr=`${d.getDate()}/${d.getMonth()+1}`;
+    const sessShort=r.sess.split(' ')[0];
+    const pc=r.pnl>=0?'b-green':'b-red';
+    const rc=RES_CLS[r.result]||'b-gray';
+    const rl=RES_LABEL[r.result]||'—';
+
     rows+=`<tr>
-      <td style="white-space:nowrap;font-size:11px">${dStr}</td>
+      <td style="font-size:11px;white-space:nowrap">${dStr}</td>
       <td><span class="badge b-blue" style="font-size:9px">${sessShort}</span></td>
-      <td style="font-size:11px">ไม้ ${r.startStep}</td>
+      <td style="font-size:11px">ไม้${r.startStep}</td>
       <td style="font-family:'Space Mono',monospace;font-size:11px">${r.bet.toLocaleString()}</td>
       <td style="font-size:11px">${r.odds}</td>
-      <td><span class="badge ${resCls}" style="font-size:9px">${resLabel}</span></td>
+      <td><span class="badge ${rc}" style="font-size:9px">${rl}</span></td>
       <td><span class="badge ${pc}">${fmt(r.pnl,true)}</span></td>
       <td style="font-family:'Space Mono',monospace;font-size:11px">${fmt(r.equity)}</td>
       <td style="color:var(--text3);font-size:11px">${r.note||'—'}</td>
     </tr>`;
   });
 
+  // summary วันสุดท้าย
   if(lastDate){
-    const dayEntries=entries.filter(e=>e.date===lastDate);
-    const dayPnl=dayEntries.reduce((a,e)=>a+e.pnl,0);
-    const dayEq=dayEntries[dayEntries.length-1].equity;
-    rows+=`<tr class="day-summary">
-      <td colspan="6" style="color:var(--text2);font-size:11px">สรุปวัน ${lastDate.slice(5).replace('-','/')}</td>
+    const dayE=entries.filter(e=>e.date===lastDate);
+    const dayPnl=dayE.reduce((a,e)=>a+e.pnl,0);
+    const dayEq=dayE[dayE.length-1].equity;
+    rows+=`<tr class="day-row">
+      <td colspan="6" style="font-size:11px;color:var(--text2)">📅 สรุป ${lastDate.slice(5).replace('-','/')}</td>
       <td><span class="badge ${dayPnl>=0?'b-green':'b-red'}">${fmt(dayPnl,true)}</span></td>
       <td style="font-family:'Space Mono',monospace;font-size:11px">${fmt(dayEq)}</td>
       <td></td>
