@@ -372,6 +372,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
 const INIT=20000, TARGET=170000, BETS=[300,700,1650,3800,8750], ODDS=1.80, BUST=17200, WARN=25800;
 const SESS_ALL=['เช้า (06-11น)','กลางวัน (11-14น)','บ่าย (14-18น)','เย็น (18-22น)','ดึก (22-06น)'];
 const KEY='mm_v2';
+const CF_URL='https://mm-sync.yen-sakdipat.workers.dev';
 const RES_LABEL={win_full:'✅ ชนะเต็ม',win_half:'🟡 ชนะครึ่ง',draw:'⚪ เจ๊า',lose_half:'🟠 แพ้ครึ่ง',lose_full:'🔴 แพ้เต็ม'};
 const RES_CLS={win_full:'b-green',win_half:'b-green',draw:'b-gray',lose_half:'b-amber',lose_full:'b-red'};
 
@@ -379,19 +380,60 @@ let entries=[];
 let selectedResult=null;
 let eqC,pnlC,sessC;
 
+function showSync(txt,color='var(--text3)'){
+  const el=document.getElementById('today-date');
+  if(el){ el.textContent=txt; el.style.color=color; }
+}
+
+async function save(){
+  // บันทึก localStorage ก่อนเสมอ
+  try{ localStorage.setItem(KEY,JSON.stringify(entries)); }catch(e){}
+  // sync ขึ้น Cloudflare
+  showSync('⏳ กำลัง sync...','var(--amber)');
+  try{
+    const res=await fetch(CF_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({entries}),
+    });
+    const data=await res.json();
+    if(data.status==='ok'){
+      showSync('✅ Sync '+new Date().toLocaleTimeString('th-TH'),'var(--green)');
+    }
+  }catch(e){
+    showSync('⚠️ Offline — บันทึกในเครื่องแล้ว','var(--amber)');
+  }
+}
+
+async function loadData(){
+  // โหลด localStorage ก่อน (เร็ว)
+  try{ const s=localStorage.getItem(KEY); if(s) entries=JSON.parse(s); }catch(e){}
+  showSync('⏳ กำลังโหลด...','var(--amber)');
+  render();
+  // โหลดจาก Cloudflare
+  try{
+    const res=await fetch(CF_URL);
+    const data=await res.json();
+    if(data.status==='ok' && data.entries && data.entries.length>=entries.length){
+      entries=data.entries;
+      try{ localStorage.setItem(KEY,JSON.stringify(entries)); }catch(e){}
+      showSync('✅ โหลดจาก Cloud แล้ว','var(--green)');
+      render();
+    } else {
+      showSync('✅ ใช้ข้อมูลล่าสุด','var(--green)');
+    }
+  }catch(e){
+    showSync('⚠️ Offline — ใช้ข้อมูลในเครื่อง','var(--amber)');
+  }
+}
+
 // ── INIT ──
 (function(){
   document.getElementById('inp-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('today-date').textContent=new Date().toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
-  try{ const s=localStorage.getItem(KEY); if(s) entries=JSON.parse(s); }catch(e){}
   updateBetHint();
   updatePnlPreview();
-  render();
+  loadData();
 })();
-
-function save(){
-  try{ localStorage.setItem(KEY,JSON.stringify(entries)); }catch(e){}
-}
 
 function fmt(n,sign=false){
   const a=Math.abs(Math.round(n)).toLocaleString('th-TH');
@@ -450,7 +492,7 @@ function selectResult(type){
   if(btn) btn.classList.add('active');
 }
 
-function addEntry(){
+async function addEntry(){
   const date=document.getElementById('inp-date').value;
   const sess=document.getElementById('inp-sess').value;
   const startStep=parseInt(document.getElementById('inp-start').value)||1;
@@ -466,7 +508,7 @@ function addEntry(){
   const equity=prevEq+pnl;
 
   entries.push({id:Date.now(),date,sess,startStep,bet,odds,result:selectedResult,pnl,equity,note});
-  save();
+  await save();
 
   // reset
   selectedResult=null;
@@ -479,16 +521,17 @@ function addEntry(){
   render();
 }
 
-function undoLast(){
+async function undoLast(){
   if(!entries.length){ showMsg('ไม่มีข้อมูลให้ลบ','warn'); return; }
-  entries.pop(); save(); render();
+  entries.pop(); await save(); render();
   showMsg('↩ ลบรายการล่าสุดแล้ว','warn');
 }
 
-function resetAll(){
+async function resetAll(){
   if(!confirm('⚠️ ล้างข้อมูลทั้งหมด?')) return;
   entries=[];
   try{ localStorage.removeItem(KEY); }catch(e){}
+  await save();
   showMsg('🗑 ล้างแล้ว','warn');
   render();
 }
