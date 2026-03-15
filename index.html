@@ -7,246 +7,164 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0f1a;
-    --bg2: #111827;
-    --bg3: #1a2332;
-    --border: rgba(255,255,255,0.08);
-    --text: #e2e8f0;
-    --text2: #94a3b8;
-    --text3: #64748b;
-    --green: #10b981;
-    --green-bg: rgba(16,185,129,0.12);
-    --red: #ef4444;
-    --red-bg: rgba(239,68,68,0.12);
-    --amber: #f59e0b;
-    --amber-bg: rgba(245,158,11,0.12);
-    --blue: #3b82f6;
-    --blue-bg: rgba(59,130,246,0.12);
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Sarabun', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0;
-  }
+:root{
+  --bg:#0a0f1a;--bg2:#111827;--bg3:#1a2332;
+  --border:rgba(255,255,255,0.08);--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --green:#10b981;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;
+  --green-bg:rgba(16,185,129,0.12);--red-bg:rgba(239,68,68,0.12);
+  --amber-bg:rgba(245,158,11,0.12);--blue-bg:rgba(59,130,246,0.12);
+  --radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:4px}
 
-  /* TOP BAR */
-  .topbar {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(8px);
-  }
-  .topbar-left { display: flex; align-items: center; gap: 12px; }
-  .logo { font-family: 'Space Mono', monospace; font-size: 16px; font-weight: 700;
-    background: linear-gradient(90deg,#3b82f6,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-  .topbar-sub { font-size: 12px; color: var(--text3); }
-  .topbar-right { display: flex; gap: 8px; align-items: center; }
+/* TOPBAR */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;background:linear-gradient(90deg,#3b82f6,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.topbar-right{display:flex;gap:8px;align-items:center}
+.btn-sm{padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:'Sarabun',sans-serif;font-size:12px;cursor:pointer}
+.btn-sm:hover{background:var(--bg2);color:var(--text)}
+.btn-export{border-color:rgba(59,130,246,.4);color:#93c5fd}
+.btn-import{border-color:rgba(16,185,129,.4);color:#6ee7b7}
 
-  /* MAIN LAYOUT */
-  .main { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 57px); }
+/* LAYOUT */
+.main{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 53px)}
 
-  /* SIDEBAR */
-  .sidebar {
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    padding: 20px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .sidebar-title { font-size: 13px; font-weight: 600; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-  .field { display: flex; flex-direction: column; gap: 5px; }
-  .field label { font-size: 12px; color: var(--text2); }
-  .field input, .field select {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--text);
-    font-family: 'Sarabun', sans-serif;
-    font-size: 13px;
-    padding: 8px 10px;
-    width: 100%;
-    outline: none;
-    transition: border-color .2s;
-  }
-  .field input:focus, .field select:focus { border-color: var(--blue); }
-  .field select option { background: var(--bg2); }
+/* SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+.sidebar-title{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;color:var(--text2)}
+.field input,.field select{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'Sarabun',sans-serif;font-size:13px;padding:7px 10px;width:100%;outline:none}
+.field input:focus,.field select:focus{border-color:var(--blue)}
+.field select option{background:var(--bg2)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.btn-primary{width:100%;padding:9px;border-radius:var(--radius-sm);background:linear-gradient(135deg,#2563eb,#1d9e75);border:none;color:#fff;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.btn-primary:hover{opacity:.9}
+.btn-ghost{width:100%;padding:7px;border-radius:var(--radius-sm);background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Sarabun',sans-serif;font-size:12px;cursor:pointer}
+.btn-ghost:hover{background:var(--bg3)}
+.btn-danger{border-color:rgba(239,68,68,.3);color:var(--red)}
+.divider{height:1px;background:var(--border)}
+.msg-box{font-size:11px;min-height:16px;text-align:center}
 
-  .btn-primary {
-    width: 100%; padding: 10px; border-radius: var(--radius-sm);
-    background: linear-gradient(135deg,#2563eb,#1d9e75);
-    border: none; color: #fff; font-family: 'Sarabun', sans-serif;
-    font-size: 14px; font-weight: 600; cursor: pointer; letter-spacing: .3px;
-    transition: opacity .2s, transform .1s;
-  }
-  .btn-primary:hover { opacity: .9; }
-  .btn-primary:active { transform: scale(.98); }
-  .btn-ghost {
-    width: 100%; padding: 8px; border-radius: var(--radius-sm);
-    background: transparent; border: 1px solid var(--border);
-    color: var(--text2); font-family: 'Sarabun', sans-serif;
-    font-size: 13px; cursor: pointer; transition: background .2s;
-  }
-  .btn-ghost:hover { background: var(--bg3); }
+/* STOP WIN */
+.sw-box{border-radius:var(--radius-sm);padding:8px 12px;font-size:12px}
+.sw-ok{background:var(--green-bg);border:1px solid rgba(16,185,129,.3);color:#6ee7b7}
+.sw-warn{background:var(--amber-bg);border:1px solid rgba(245,158,11,.3);color:#fcd34d}
+.sw-none{background:var(--bg3);border:1px solid var(--border);color:var(--text3)}
+.prog-wrap{display:flex;flex-direction:column;gap:4px}
+.prog-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3)}
+.prog-track{height:5px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;transition:width .4s,background .4s}
 
-  .divider { height: 1px; background: var(--border); }
+/* CONTENT */
+.content{padding:16px 20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
 
-  /* Martingale ref table */
-  .mg-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .mg-table th { color: var(--text3); font-weight: 600; padding: 4px 6px; text-align: left; }
-  .mg-table td { padding: 5px 6px; color: var(--text2); border-top: 1px solid var(--border); }
-  .mg-table .step5 td { color: var(--red); }
+/* ALERT */
+.alert{border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.alert-ok{background:var(--green-bg);border:1px solid rgba(16,185,129,.3);color:#6ee7b7}
+.alert-warn{background:var(--amber-bg);border:1px solid rgba(245,158,11,.3);color:#fcd34d}
+.alert-danger{background:var(--red-bg);border:1px solid rgba(239,68,68,.3);color:#fca5a5}
+.alert b{font-weight:600;display:block;margin-bottom:1px}
 
-  .msg-box { font-size: 12px; min-height: 18px; transition: color .3s; }
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.kpi-label{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.kpi-value{font-family:'Space Mono',monospace;font-size:17px;font-weight:700}
+.kpi-sub{font-size:10px;color:var(--text3);margin-top:3px}
 
-  /* CONTENT */
-  .content { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+/* PROGRESS */
+.prog-section{display:flex;flex-direction:column;gap:5px}
+.prog-big-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3)}
+.prog-big-track{height:8px;background:var(--bg3);border-radius:6px;overflow:hidden}
+.prog-big-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#10b981);border-radius:6px;transition:width .6s}
 
-  /* ALERT */
-  .alert { border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; display: flex; align-items: flex-start; gap: 10px; }
-  .alert-ok     { background: var(--green-bg); border: 1px solid rgba(16,185,129,.3); color: #6ee7b7; }
-  .alert-warn   { background: var(--amber-bg); border: 1px solid rgba(245,158,11,.3); color: #fcd34d; }
-  .alert-danger { background: var(--red-bg);   border: 1px solid rgba(239,68,68,.3);  color: #fca5a5; }
-  .alert-icon { font-size: 16px; margin-top: 1px; }
-  .alert-text b { font-weight: 600; display: block; margin-bottom: 2px; }
+/* CHARTS */
+.charts-row{display:grid;grid-template-columns:3fr 2fr;gap:12px}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.chart-title{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:10px;letter-spacing:.3px}
 
-  /* KPI GRID */
-  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-  .kpi-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-  }
-  .kpi-label { font-size: 10px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-  .kpi-value { font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; }
-  .kpi-sub   { font-size: 11px; color: var(--text3); margin-top: 4px; }
+/* SESSION CARDS */
+.sess-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sess-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;text-align:center}
+.sess-name{font-size:9px;color:var(--text3);margin-bottom:5px}
+.sess-pnl{font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
+.sess-wr{font-size:9px;color:var(--text3);margin-top:3px}
+.insight{background:var(--blue-bg);border:1px solid rgba(59,130,246,.25);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:#93c5fd;line-height:1.6}
 
-  /* PROGRESS */
-  .prog-section { display: flex; flex-direction: column; gap: 6px; }
-  .prog-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); }
-  .prog-track { height: 10px; background: var(--bg3); border-radius: 6px; overflow: hidden; }
-  .prog-fill { height: 100%; background: linear-gradient(90deg,#3b82f6,#10b981); border-radius: 6px; transition: width .6s ease; }
+/* AUTO SCALE */
+.scale-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.scale-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.scale-title{font-size:11px;font-weight:600;color:var(--text2)}
+.scale-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
+.scale-badge-up{background:rgba(16,185,129,.15);color:#6ee7b7}
+.scale-badge-same{background:rgba(100,116,139,.15);color:var(--text3)}
+.scale-bets{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}
+.scale-bet{background:var(--bg3);border-radius:var(--radius-sm);padding:8px;text-align:center;border:1px solid var(--border);transition:border-color .3s}
+.scale-bet.changed{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.05)}
+.scale-bet-lbl{font-size:9px;color:var(--text3);margin-bottom:3px}
+.scale-bet-val{font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
+.scale-bet-diff{font-size:9px;margin-top:2px}
+.scale-info{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.scale-info-item{background:var(--bg3);border-radius:var(--radius-sm);padding:8px 10px}
+.scale-info-lbl{font-size:9px;color:var(--text3);margin-bottom:2px}
+.scale-info-val{font-size:13px;font-weight:600;font-family:'Space Mono',monospace}
+.scale-formula{background:var(--bg3);border-radius:var(--radius-sm);padding:8px 12px;font-size:11px;color:var(--text3);line-height:1.6;border-left:3px solid rgba(59,130,246,.5)}
+.scale-formula b{color:var(--text2)}
 
-  /* CHARTS ROW */
-  .charts-row { display: grid; grid-template-columns: 3fr 2fr; gap: 14px; }
-  .chart-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-  }
-  .chart-card-title { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 12px; letter-spacing: .3px; }
+/* TABLE */
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.table-header{padding:12px 14px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text2)}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{background:var(--bg3);padding:8px 12px;text-align:left;font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+tbody td{padding:8px 12px;border-top:1px solid var(--border);vertical-align:middle}
+tbody tr:hover td{background:rgba(255,255,255,0.02)}
+.day-summary td{background:rgba(59,130,246,0.05);font-weight:600;border-top:2px solid rgba(59,130,246,.2)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.b-green{background:rgba(16,185,129,.15);color:#6ee7b7}
+.b-red{background:rgba(239,68,68,.15);color:#fca5a5}
+.b-amber{background:rgba(245,158,11,.15);color:#fcd34d}
+.b-blue{background:rgba(59,130,246,.15);color:#93c5fd}
+.b-gray{background:rgba(100,116,139,.15);color:var(--text2)}
+.empty{padding:32px;text-align:center;color:var(--text3);font-size:13px}
 
-  /* SESSION */
-  .sess-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-  .sess-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 12px; text-align: center;
-  }
-  .sess-name { font-size: 10px; color: var(--text3); margin-bottom: 6px; }
-  .sess-pnl  { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; }
-  .sess-wr   { font-size: 10px; color: var(--text3); margin-top: 4px; }
+/* hidden file input */
+#import-file{display:none}
 
-  .insight {
-    background: var(--blue-bg); border: 1px solid rgba(59,130,246,.25);
-    border-radius: var(--radius-sm); padding: 12px 16px; font-size: 12px; color: #93c5fd;
-    line-height: 1.6;
-  }
-
-  /* TABLE */
-  .table-wrap {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: hidden;
-  }
-  .table-header { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text2); }
-  .table-scroll { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead th {
-    background: var(--bg3); padding: 10px 14px; text-align: left;
-    font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: .5px;
-    text-transform: uppercase; white-space: nowrap;
-  }
-  tbody td { padding: 10px 14px; border-top: 1px solid var(--border); vertical-align: middle; }
-  tbody tr:hover td { background: rgba(255,255,255,0.02); }
-  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .b-green  { background: rgba(16,185,129,.15); color: #6ee7b7; }
-  .b-red    { background: rgba(239,68,68,.15);  color: #fca5a5; }
-  .b-amber  { background: rgba(245,158,11,.15); color: #fcd34d; }
-  .b-blue   { background: rgba(59,130,246,.15); color: #93c5fd; }
-  .empty { padding: 40px; text-align: center; color: var(--text3); font-size: 14px; }
-
-  /* AUTO-SCALE PANEL */
-  .scale-panel {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 18px 20px;
-  }
-  .scale-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-  .scale-title { font-size:13px; font-weight:600; color:var(--text2); }
-  .scale-badge { font-size:11px; padding:3px 10px; border-radius:20px; font-weight:600; }
-  .scale-badge-up   { background:rgba(16,185,129,.15); color:#6ee7b7; }
-  .scale-badge-same { background:rgba(100,116,139,.15); color:var(--text3); }
-
-  .scale-bets { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin-bottom:14px; }
-  .scale-bet { background:var(--bg3); border-radius:var(--radius-sm); padding:10px; text-align:center; border:1px solid var(--border); transition: border-color .3s; }
-  .scale-bet.changed { border-color:rgba(16,185,129,.5); background:rgba(16,185,129,.06); }
-  .scale-bet-lbl { font-size:10px; color:var(--text3); margin-bottom:4px; }
-  .scale-bet-val { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; color:var(--text); }
-  .scale-bet-diff { font-size:10px; margin-top:3px; }
-
-  .scale-info { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
-  .scale-info-item { background:var(--bg3); border-radius:var(--radius-sm); padding:10px 12px; }
-  .scale-info-lbl { font-size:10px; color:var(--text3); margin-bottom:3px; }
-  .scale-info-val { font-size:14px; font-weight:600; font-family:'Space Mono',monospace; }
-
-  .scale-formula { background:var(--bg3); border-radius:var(--radius-sm); padding:10px 14px; font-size:12px; color:var(--text3); line-height:1.7; border-left:3px solid rgba(59,130,246,.5); }
-  .scale-formula b { color:var(--text2); }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 4px; }
-
-  @media (max-width: 900px) {
-    .main { grid-template-columns: 1fr; }
-    .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
-    .kpi-grid { grid-template-columns: repeat(2,1fr); }
-    .charts-row { grid-template-columns: 1fr; }
-    .sess-grid { grid-template-columns: repeat(3,1fr); }
-  }
+@media(max-width:900px){
+  .main{grid-template-columns:1fr}
+  .sidebar{border-right:none;border-bottom:1px solid var(--border)}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .charts-row{grid-template-columns:1fr}
+  .sess-grid{grid-template-columns:repeat(3,1fr)}
+  .scale-bets{grid-template-columns:repeat(3,1fr)}
+}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="topbar-left">
+  <div>
     <div class="logo">💰 MM Dashboard</div>
-    <div class="topbar-sub">Martingale 5 ไม้ · ทุน 20,000฿ → เป้า 150,000฿ · ค่าน้ำ 1.80</div>
+    <div class="topbar-sub">Martingale 5 ไม้ · ทุน 20,000฿ → เป้า 170,000฿</div>
   </div>
   <div class="topbar-right">
-    <span id="sync-status" style="font-size:11px;color:var(--text3)">กำลังโหลด...</span>
-    <span id="today-date" style="font-size:12px;color:var(--text3)"></span>
+    <span id="today-date" style="font-size:11px;color:var(--text3)"></span>
+    <button class="btn-sm btn-export" onclick="exportData()">⬇ Export</button>
+    <button class="btn-sm btn-import" onclick="document.getElementById('import-file').click()">⬆ Import</button>
+    <input type="file" id="import-file" accept=".json" onchange="importData(event)">
   </div>
 </div>
 
 <div class="main">
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <div>
-      <div class="sidebar-title">📋 บันทึกผล</div>
-    </div>
+    <div class="sidebar-title">📋 บันทึกผล</div>
 
     <div class="field">
       <label>📅 วันที่</label>
@@ -262,60 +180,60 @@
         <option>ดึก (22-06น)</option>
       </select>
     </div>
+
     <div class="field">
-      <label>🪵 ลำดับไม้ที่เริ่ม / จำนวนเงิน</label>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-        <select id="inp-start" onchange="updateSidebar()">
+      <label>🪵 ไม้ที่เริ่ม / จำนวนเงิน</label>
+      <div class="field-row">
+        <select id="inp-start" onchange="updateBetHint()">
           <option value="1">ไม้ 1</option>
           <option value="2">ไม้ 2</option>
           <option value="3">ไม้ 3</option>
           <option value="4">ไม้ 4</option>
           <option value="5">ไม้ 5</option>
         </select>
-        <input type="number" id="inp-bet-amt" min="1" placeholder="จำนวน ฿" oninput="updateSidebar()">
+        <input type="number" id="inp-bet" min="1" placeholder="฿">
       </div>
     </div>
     <div class="field">
       <label>💧 ค่าน้ำจริง</label>
-      <input type="number" id="inp-odds" value="1.80" step="0.01" min="1.01" onchange="updateSidebar()">
+      <input type="number" id="inp-odds" value="1.80" step="0.01" min="1.01">
     </div>
-    <div class="field">
-      <label>✅ จำนวนครั้งที่ชนะ</label>
-      <input type="number" id="inp-w" min="0" value="0">
-    </div>
-    <div class="field">
-      <label>❌ จำนวนครั้งที่แพ้</label>
-      <input type="number" id="inp-l" min="0" value="0">
-    </div>
-
-    <!-- STOP WIN -->
-    <div id="sw-sidebar"></div>
-    <div style="font-size:11px;color:var(--text3)">
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-        <span>กำไรวันนี้</span><span id="sw-pct">0%</span>
+    <div class="field-row">
+      <div class="field">
+        <label>✅ ชนะ</label>
+        <input type="number" id="inp-w" min="0" value="0">
       </div>
-      <div style="height:6px;background:var(--bg3);border-radius:4px;overflow:hidden">
-        <div id="sw-bar" style="height:100%;width:0%;border-radius:4px;background:var(--blue);transition:width .4s,background .4s"></div>
+      <div class="field">
+        <label>❌ แพ้</label>
+        <input type="number" id="inp-l" min="0" value="0">
       </div>
     </div>
     <div class="field">
       <label>📝 หมายเหตุ</label>
-      <input type="text" id="inp-note" placeholder="เช่น ช่วงเช้าดีมาก">
+      <input type="text" id="inp-note" placeholder="เช่น แมนยู vs ลิเวอร์พูล">
     </div>
 
-    <button class="btn-primary" onclick="addRecord()">➕ บันทึกผล</button>
+    <!-- STOP WIN -->
+    <div id="sw-box" class="sw-box sw-none">—</div>
+    <div class="prog-wrap">
+      <div class="prog-labels">
+        <span>กำไรวันนี้</span><span id="sw-pct">0%</span>
+      </div>
+      <div class="prog-track">
+        <div class="prog-fill" id="sw-bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="addEntry()">➕ บันทึกเกม</button>
     <div class="msg-box" id="msg"></div>
 
     <div class="divider"></div>
-
     <button class="btn-ghost" onclick="undoLast()">↩ ลบรายการล่าสุด</button>
-    <button class="btn-ghost" style="color:#ef4444;border-color:rgba(239,68,68,.3)" onclick="resetAll()">🗑 ล้างข้อมูลทั้งหมด</button>
-
+    <button class="btn-ghost btn-danger" onclick="resetAll()">🗑 ล้างข้อมูลทั้งหมด</button>
   </div>
 
   <!-- CONTENT -->
   <div class="content">
-    <!-- ALERT -->
     <div id="alert-box"></div>
 
     <!-- KPI -->
@@ -326,8 +244,8 @@
         <div class="kpi-sub">ปัจจุบัน</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">กำไร / ขาดทุน</div>
-        <div class="kpi-value" id="k-pnl" style="color:var(--text2)">+0 ฿</div>
+        <div class="kpi-label">กำไร/ขาดทุน</div>
+        <div class="kpi-value" id="k-pnl">+0 ฿</div>
         <div class="kpi-sub" id="k-prog">Progress 0%</div>
       </div>
       <div class="kpi-card">
@@ -336,50 +254,50 @@
         <div class="kpi-sub" id="k-wl">W:0 L:0</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">วันถึงไม้ 5</div>
-        <div class="kpi-value" id="k-s5" style="color:var(--text2)">0 วัน</div>
-        <div class="kpi-sub" id="k-s5s">จาก 0 วัน</div>
+        <div class="kpi-label">เกมทั้งหมด</div>
+        <div class="kpi-value" id="k-games" style="color:var(--blue)">0</div>
+        <div class="kpi-sub" id="k-days">0 วัน</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">เหลือถึงเป้า</div>
         <div class="kpi-value" id="k-rem" style="color:var(--amber)">130,000 ฿</div>
-        <div class="kpi-sub">เป้า 150,000 ฿</div>
+        <div class="kpi-sub">เป้า 170,000 ฿</div>
       </div>
     </div>
 
     <!-- PROGRESS -->
     <div class="prog-section">
-      <div class="prog-labels">
+      <div class="prog-big-labels">
         <span>ทุนตั้งต้น 20,000 ฿</span>
         <span id="prog-pct">0%</span>
         <span>เป้าหมาย 150,000 ฿</span>
       </div>
-      <div class="prog-track">
-        <div class="prog-fill" id="prog" style="width:0%"></div>
+      <div class="prog-big-track">
+        <div class="prog-big-fill" id="prog" style="width:0%"></div>
       </div>
     </div>
 
     <!-- CHARTS -->
     <div class="charts-row">
       <div class="chart-card">
-        <div class="chart-card-title">📈 EQUITY CURVE vs เป้าหมาย</div>
-        <div style="position:relative;height:240px"><canvas id="eqChart"></canvas></div>
+        <div class="chart-title">📈 EQUITY CURVE vs เป้าหมาย</div>
+        <div style="position:relative;height:220px"><canvas id="eqChart"></canvas></div>
       </div>
       <div class="chart-card">
-        <div class="chart-card-title">📊 กำไร / ขาดทุนรายวัน</div>
-        <div style="position:relative;height:240px"><canvas id="pnlChart"></canvas></div>
+        <div class="chart-title">📊 กำไร/ขาดทุนรายวัน</div>
+        <div style="position:relative;height:220px"><canvas id="pnlChart"></canvas></div>
       </div>
     </div>
 
-    <!-- SESSION CHART -->
+    <!-- SESSION -->
     <div class="chart-card">
-      <div class="chart-card-title">⏰ วิเคราะห์ช่วงเวลา — PnL vs Win Rate</div>
-      <div style="position:relative;height:180px"><canvas id="sessChart"></canvas></div>
+      <div class="chart-title">⏰ วิเคราะห์ช่วงเวลา — PnL vs Win Rate</div>
+      <div style="position:relative;height:160px"><canvas id="sessChart"></canvas></div>
     </div>
     <div class="sess-grid" id="sess-cards"></div>
     <div id="sess-tip"></div>
 
-    <!-- AUTO-SCALE PANEL -->
+    <!-- AUTO SCALE -->
     <div class="scale-panel">
       <div class="scale-header">
         <div class="scale-title">📐 Auto-Scale Bet — ปรับ Bet ตามทุนอัตโนมัติ</div>
@@ -392,181 +310,116 @@
 
     <!-- TABLE -->
     <div class="table-wrap">
-      <div class="table-header">📋 ประวัติรายวัน</div>
+      <div class="table-header">📋 ประวัติทุกเกม</div>
       <div class="table-scroll">
         <table>
           <thead>
             <tr>
-              <th>วันที่</th><th>ช่วงเวลา</th><th>ชนะ</th><th>แพ้</th>
-              <th>Win Rate</th><th>ไม้สูงสุด</th><th>PnL</th><th>Equity</th><th>หมายเหตุ</th>
+              <th>วันที่</th><th>ช่วงเวลา</th><th>ไม้เริ่ม</th><th>Bet ฿</th>
+              <th>ค่าน้ำ</th><th>ชนะ</th><th>แพ้</th><th>WR</th>
+              <th>PnL</th><th>Equity</th><th>หมายเหตุ</th>
             </tr>
           </thead>
           <tbody id="tbl-body"></tbody>
         </table>
-        <div class="empty" id="empty-msg">ยังไม่มีข้อมูล — กรอกผลรายวันแล้วกด บันทึกผล</div>
+        <div class="empty" id="empty-msg">ยังไม่มีข้อมูล — กรอกผลแล้วกด บันทึกเกม</div>
       </div>
     </div>
-
-  </div><!-- end content -->
-</div><!-- end main -->
+  </div>
+</div>
 
 <script>
-const INIT=20000,TARGET=150000,BETS=[300,700,1650,3800,8750],ODDS=1.80,BUST=17200,WARN=25800;
+const INIT=20000,TARGET=170000,BETS=[300,700,1650,3800,8750],ODDS=1.80,BUST=17200,WARN=25800;
 const SESS_ALL=['เช้า (06-11น)','กลางวัน (11-14น)','บ่าย (14-18น)','เย็น (18-22น)','ดึก (22-06น)'];
-const STORAGE_KEY='mm_dashboard_v1';
-const GS_URL='https://script.google.com/macros/s/AKfycbwZEkWzH9zrebARSArwthHzlDbNBwGg_ruG_M70zidsHMvIMmLqItr-rtx4sDDU3f43YQ/exec';
+const KEY='mm_v2';
 
-let records=[];
+let entries=[]; // แต่ละเกม
 let eqC,pnlC,sessC;
 
-function showSyncStatus(txt,color='var(--text3)'){
-  const el=document.getElementById('sync-status');
-  if(el){ el.textContent=txt; el.style.color=color; }
-}
-
-// ── iframe postMessage (ไม่ติด CORS และ CSP) ──
-function gsRequest(params){
-  return new Promise((resolve,reject)=>{
-    const iframe=document.createElement('iframe');
-    iframe.style.cssText='display:none;width:0;height:0;border:0';
-    const qs=Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
-    iframe.src=GS_URL+'?'+qs;
-    const timer=setTimeout(()=>{
-      window.removeEventListener('message',handler);
-      if(document.body.contains(iframe)) document.body.removeChild(iframe);
-      reject(new Error('timeout'));
-    },20000);
-    function handler(e){
-      if(e.data && (e.data.action==='save'||e.data.action==='load')){
-        clearTimeout(timer);
-        window.removeEventListener('message',handler);
-        if(document.body.contains(iframe)) document.body.removeChild(iframe);
-        resolve(e.data);
-      }
-    }
-    window.addEventListener('message',handler);
-    document.body.appendChild(iframe);
-  });
-}
-
-function saveToSheets(){
-  try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){}
-  showSyncStatus('⏳ กำลัง sync...','var(--amber)');
-  gsRequest({action:'save',records:JSON.stringify(records)})
-    .then(()=>{
-      showSyncStatus('✅ Sync แล้ว '+new Date().toLocaleTimeString('th-TH'),'var(--green)');
-    }).catch(()=>{
-      showSyncStatus('⚠️ Offline — บันทึกในเครื่องแล้ว','var(--amber)');
-    });
-}
-
-function loadFromSheets(){
-  try{
-    const saved=localStorage.getItem(STORAGE_KEY);
-    if(saved){ records=JSON.parse(saved); render(); updateSidebar(); }
-  }catch(e){}
-  showSyncStatus('⏳ กำลังโหลด...','var(--amber)');
-  gsRequest({action:'load',t:Date.now()})
-    .then(data=>{
-      if(data.records && data.records.length){
-        const sr=data.records.map(r=>({
-          date:String(r.date||'').trim(), sess:r.sess||'',
-          w:parseInt(r.wins)||0, l:parseInt(r.losses)||0,
-          s:parseInt(r.step)||1, odds:parseFloat(r.odds)||1.80,
-          betAmt:parseFloat(r.betAmt)||0, pnl:parseFloat(r.pnl)||0,
-          equity:parseFloat(r.equity)||INIT, note:r.note||''
-        }));
-        sr.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-        if(sr.length>=records.length){
-          records=sr;
-          try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){}
-          showSyncStatus('✅ โหลดจาก Google Sheets แล้ว','var(--green)');
-        } else {
-          showSyncStatus('✅ ใช้ข้อมูลในเครื่อง (ใหม่กว่า)','var(--green)');
-        }
-      } else {
-        showSyncStatus('📭 Sheets ว่าง — ใช้ข้อมูลในเครื่อง','var(--text3)');
-      }
-      render(); updateSidebar();
-    }).catch(()=>{
-      showSyncStatus('⚠️ Offline — ใช้ข้อมูลในเครื่อง','var(--amber)');
-      render(); updateSidebar();
-    });
-}
-
-// ── Init ──
+// ── INIT ──
 (function(){
-  const today=new Date();
-  document.getElementById('inp-date').value=today.toISOString().split('T')[0];
-  document.getElementById('today-date').textContent=today.toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  loadFromSheets();
+  document.getElementById('inp-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('today-date').textContent=new Date().toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+  try{ const s=localStorage.getItem(KEY); if(s) entries=JSON.parse(s); }catch(e){}
+  updateBetHint();
+  render();
 })();
 
-function save(){ saveToSheets(); }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(entries)); }catch(e){} }
 
 function fmt(n,sign=false){
-  const abs=Math.abs(Math.round(n)).toLocaleString('th-TH');
-  if(sign) return (n>=0?'+':'-')+abs+' ฿';
-  return abs+' ฿';
+  const a=Math.abs(Math.round(n)).toLocaleString('th-TH');
+  return sign?(n>=0?'+':'-')+a+' ฿':a+' ฿';
 }
 
-function calcPnl(w,l,s,startStep,odds,betAmt){
-  const curEq=records.length?records[records.length-1].equity:INIT;
-  const sb=scaleBets(curEq);
-  // ถ้ากรอกจำนวนเงินมาเอง ใช้เลย ถ้าไม่ ใช้ auto-scale
-  const startBet=betAmt||sb[(startStep||1)-1];
-  const realOdds=odds||ODDS;
-  // คำนวณ bet ทุกไม้จาก ratio ของ startBet
-  const ratio=BETS.map(b=>b/BETS[(startStep||1)-1]);
-  const profitPerWin=Math.round(startBet*(realOdds-1));
-  const lossChain=ratio.slice(0,s-(startStep||1)+1).map(r=>Math.round(startBet*r)).reduce((a,b)=>a+b,0);
-  return Math.round(w*profitPerWin - l*lossChain);
+function scaleBets(cap){
+  // ถ้าทุนต่ำกว่าหรือเท่ากับ 20,000 ใช้ bet ตั้งต้นเสมอ ไม่ลดลงอีก
+  if(cap<=INIT) return [...BETS];
+  const f=Math.sqrt(cap/INIT);
+  return BETS.map(b=>Math.max(b,Math.round(b*f/50)*50));
 }
 
-function recalcEquity(){
-  let eq=INIT;
-  records.forEach(r=>{ eq+=r.pnl; r.equity=eq; });
+function updateBetHint(){
+  const eq=entries.length?entries[entries.length-1].equity:INIT;
+  const sb=scaleBets(eq);
+  const step=parseInt(document.getElementById('inp-start').value)||1;
+  const betEl=document.getElementById('inp-bet');
+  if(!betEl.value||betEl.dataset.auto==='1'){
+    betEl.value=sb[step-1];
+    betEl.dataset.auto='1';
+  }
 }
 
-function addRecord(){
-  const dateVal=document.getElementById('inp-date').value;
+function calcPnl(w,l,startStep,bet,odds){
+  // ชนะ = ได้กำไร bet × (odds-1)
+  const profit=Math.round(bet*(odds-1));
+  // แพ้ = เสีย bet ไม้นั้น (แค่ไม้เดียว ไม่ใช่ทั้ง series)
+  const loss=bet;
+  return Math.round(w*profit - l*loss);
+}
+
+function addEntry(){
+  const date=document.getElementById('inp-date').value;
   const sess=document.getElementById('inp-sess').value;
+  const startStep=parseInt(document.getElementById('inp-start').value)||1;
+  const bet=parseFloat(document.getElementById('inp-bet').value)||BETS[startStep-1];
+  const odds=parseFloat(document.getElementById('inp-odds').value)||ODDS;
   const w=Math.max(0,parseInt(document.getElementById('inp-w').value)||0);
   const l=Math.max(0,parseInt(document.getElementById('inp-l').value)||0);
-  const s=parseInt(document.getElementById('inp-start').value)||1;
-  const odds=parseFloat(document.getElementById('inp-odds').value)||ODDS;
-  const betAmt=parseFloat(document.getElementById('inp-bet-amt').value)||0;
   const note=document.getElementById('inp-note').value.trim();
-  if(!dateVal){ showMsg('กรุณาเลือกวันที่','warn'); return; }
-  const pnl=calcPnl(w,l,s,s,odds,betAmt);
-  const rec={date:dateVal,sess,w,l,s,odds,betAmt,pnl,equity:0,note};
-  const idx=records.findIndex(r=>r.date===dateVal);
-  if(idx>=0){
-    records[idx]=rec;
-    showMsg(`✏️ อัปเดตวันที่ ${dateVal} แล้ว`,'ok');
-  } else {
-    records.push(rec);
-    showMsg(`✅ บันทึกแล้ว | PnL = ${fmt(pnl,true)}`,'ok');
-  }
-  records.sort((a,b)=>a.date.localeCompare(b.date));
-  recalcEquity();
-  // บันทึก localStorage ทันทีก่อน sync
-  try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(records)); }catch(e){}
+  if(!date){ showMsg('กรุณาเลือกวันที่','warn'); return; }
+  if(w===0&&l===0){ showMsg('กรอกชนะหรือแพ้อย่างน้อย 1','warn'); return; }
+
+  const prevEq=entries.length?entries[entries.length-1].equity:INIT;
+  const pnl=calcPnl(w,l,startStep,bet,odds);
+  const equity=prevEq+pnl;
+
+  entries.push({id:Date.now(),date,sess,startStep,bet,odds,w,l,pnl,equity,note});
   save();
+
+  // reset wins/losses/note ไว้กรอกต่อ
+  document.getElementById('inp-w').value=0;
+  document.getElementById('inp-l').value=0;
+  document.getElementById('inp-note').value='';
+  document.getElementById('inp-bet').dataset.auto='1';
+  updateBetHint();
+
+  showMsg(`✅ บันทึกแล้ว | PnL = ${fmt(pnl,true)}`,'ok');
   render();
 }
 
 function undoLast(){
-  if(!records.length){ showMsg('ไม่มีข้อมูลให้ลบ','warn'); return; }
-  const last=records.pop();
-  recalcEquity(); save(); render();
-  showMsg(`↩ ลบวันที่ ${last.date} แล้ว`,'warn');
+  if(!entries.length){ showMsg('ไม่มีข้อมูลให้ลบ','warn'); return; }
+  entries.pop(); save(); render();
+  showMsg('↩ ลบรายการล่าสุดแล้ว','warn');
 }
 
 function resetAll(){
-  if(!confirm('⚠️ ล้างข้อมูลทั้งหมด?\nการกระทำนี้ไม่สามารถย้อนกลับได้')) return;
-  records=[]; save(); render();
-  showMsg('🗑 ล้างข้อมูลทั้งหมดแล้ว','warn');
+  if(!confirm('⚠️ ล้างข้อมูลทั้งหมด?\nไม่สามารถย้อนกลับได้')) return;
+  entries=[];
+  try{ localStorage.removeItem(KEY); }catch(e){}
+  showMsg('🗑 ล้างแล้ว','warn');
+  render();
 }
 
 function showMsg(txt,type='ok'){
@@ -577,36 +430,58 @@ function showMsg(txt,type='ok'){
   el._t=setTimeout(()=>el.textContent='',4000);
 }
 
+// ── EXPORT / IMPORT ──
+function exportData(){
+  const blob=new Blob([JSON.stringify(entries,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='mm-data-'+new Date().toISOString().split('T')[0]+'.json';
+  a.click();
+}
+
+function importData(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(Array.isArray(data)){
+        entries=data;
+        save(); render();
+        showMsg('✅ Import สำเร็จ '+data.length+' รายการ','ok');
+      }
+    }catch(err){ showMsg('❌ ไฟล์ไม่ถูกต้อง','warn'); }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ── RENDER ──
 function render(){
-  const eq=records.length?records[records.length-1].equity:INIT;
+  const eq=entries.length?entries[entries.length-1].equity:INIT;
   const totalPnl=eq-INIT;
   const pct=Math.max(0,Math.min(100,Math.round((eq-INIT)/(TARGET-INIT)*100)));
-  const wins=records.reduce((a,r)=>a+r.w,0);
-  const losses=records.reduce((a,r)=>a+r.l,0);
+  const wins=entries.reduce((a,r)=>a+r.w,0);
+  const losses=entries.reduce((a,r)=>a+r.l,0);
   const wr=wins+losses>0?Math.round(wins/(wins+losses)*100):null;
-  const s5=records.filter(r=>r.s===5).length;
+  const days=[...new Set(entries.map(r=>r.date))].length;
   const can=Math.floor(eq/BUST);
 
   // KPIs
   const eqEl=document.getElementById('k-eq');
   eqEl.textContent=fmt(eq);
   eqEl.style.color=eq>=INIT?'var(--green)':'var(--red)';
-
   const pnlEl=document.getElementById('k-pnl');
   pnlEl.textContent=fmt(totalPnl,true);
   pnlEl.style.color=totalPnl>=0?'var(--green)':'var(--red)';
   document.getElementById('k-prog').textContent='Progress '+pct+'%';
-
   const wrEl=document.getElementById('k-wr');
   wrEl.textContent=wr!==null?wr+'%':'—';
   wrEl.style.color=wr===null?'var(--text2)':wr>=55?'var(--green)':wr>=45?'var(--amber)':'var(--red)';
   document.getElementById('k-wl').textContent='W:'+wins+' L:'+losses;
-
-  const s5El=document.getElementById('k-s5');
-  s5El.textContent=s5+' วัน';
-  s5El.style.color=s5>0?'var(--red)':'var(--green)';
-  document.getElementById('k-s5s').textContent='จาก '+records.length+' วัน';
-
+  document.getElementById('k-games').textContent=entries.length;
+  document.getElementById('k-days').textContent=days+' วัน';
   document.getElementById('k-rem').textContent=fmt(Math.max(0,TARGET-eq));
   document.getElementById('prog').style.width=pct+'%';
   document.getElementById('prog-pct').textContent=pct+'%';
@@ -614,64 +489,85 @@ function render(){
   // Alert
   let alertHtml='';
   if(eq<=BUST){
-    alertHtml=`<div class="alert alert-danger"><span class="alert-icon">🚨</span><div class="alert-text"><b>อันตราย — ทุนร่อยหรอวิกฤต!</b>ทุนปัจจุบัน ${fmt(eq)} เหลือน้อยกว่าความเสียหายสูงสุด 1 series ไม้ 5 (${fmt(BUST)}) — ควรหยุดเล่นทันที</div></div>`;
+    alertHtml=`<div class="alert alert-danger"><span>🚨</span><div><b>อันตราย — ทุนร่อยหรอวิกฤต!</b>ทุน ${fmt(eq)} เหลือน้อยกว่าความเสี่ยงสูงสุด 1 series — ควรหยุดเล่นทันที</div></div>`;
   } else if(eq<=WARN){
-    alertHtml=`<div class="alert alert-warn"><span class="alert-icon">⚠️</span><div class="alert-text"><b>เตือน — ทุนเริ่มน้อย</b>ทุนปัจจุบัน ${fmt(eq)} รองรับไม้ 5 ได้ ${can} ครั้ง — แนะนำลด session ก่อน ทุนปลอดภัยควรเกิน ${fmt(WARN)}</div></div>`;
+    alertHtml=`<div class="alert alert-warn"><span>⚠️</span><div><b>เตือน — ทุนเริ่มน้อย</b>ทุน ${fmt(eq)} รองรับไม้ 5 ได้ ${can} ครั้ง — แนะนำลด session</div></div>`;
   } else {
-    alertHtml=`<div class="alert alert-ok"><span class="alert-icon">✅</span><div class="alert-text"><b>ทุนปลอดภัย</b>รองรับ series ไม้ 5 ได้ ${can} ครั้ง · Bust Risk ต่ำ</div></div>`;
+    alertHtml=`<div class="alert alert-ok"><span>✅</span><div><b>ทุนปลอดภัย</b> รองรับ series ไม้ 5 ได้ ${can} ครั้ง</div></div>`;
   }
   document.getElementById('alert-box').innerHTML=alertHtml;
 
-  renderCharts();
+  // Stop Win (วันนี้)
+  const today=new Date().toISOString().split('T')[0];
+  const todayPnl=entries.filter(r=>r.date===today).reduce((a,r)=>a+r.pnl,0);
+  const dailyTarget=Math.round(eq*0.05);
+  const swPct=Math.max(0,Math.min(100,Math.round(todayPnl/dailyTarget*100)));
+  document.getElementById('sw-pct').textContent=swPct+'%';
+  const bar=document.getElementById('sw-bar');
+  bar.style.width=swPct+'%';
+  bar.style.background=swPct>=100?'var(--green)':swPct>=80?'var(--amber)':'var(--blue)';
+  const swBox=document.getElementById('sw-box');
+  if(todayPnl>=dailyTarget){
+    swBox.className='sw-box sw-ok';
+    swBox.innerHTML=`🎯 <b>ถึงเป้าวันนี้แล้ว!</b> +${todayPnl.toLocaleString()} ฿`;
+  } else if(swPct>=80){
+    swBox.className='sw-box sw-warn';
+    swBox.innerHTML=`⚡ <b>ใกล้ถึงเป้า!</b> เหลืออีก ${(dailyTarget-todayPnl).toLocaleString()} ฿`;
+  } else {
+    swBox.className='sw-box sw-none';
+    swBox.innerHTML=`🎯 เป้าวันนี้ ${dailyTarget.toLocaleString()} ฿ · กำไรแล้ว ${todayPnl.toLocaleString()} ฿`;
+  }
+
+  renderCharts(eq);
   renderSession();
   renderAutoScale(eq);
-  renderStopWin(eq);
-  updateSidebar();
   renderTable();
 }
 
-function renderCharts(){
-  const labels=['เริ่มต้น',...records.map(r=>r.date.slice(5).replace('-','/'))];
-  const eqs=[INIT,...records.map(r=>r.equity)];
+function renderCharts(eq){
+  // group by date
+  const dateMap={};
+  entries.forEach(r=>{
+    if(!dateMap[r.date]) dateMap[r.date]={pnl:0,equity:r.equity};
+    dateMap[r.date].pnl+=r.pnl;
+    dateMap[r.date].equity=r.equity;
+  });
+  const dates=Object.keys(dateMap).sort();
+  const eqLabels=['เริ่มต้น',...dates.map(d=>d.slice(5).replace('-','/'))];
+  const eqVals=[INIT,...dates.map(d=>dateMap[d].equity)];
+  const pnlVals=dates.map(d=>dateMap[d].pnl);
 
   if(eqC) eqC.destroy();
   eqC=new Chart(document.getElementById('eqChart'),{
     type:'line',
-    data:{labels,datasets:[
-      {label:'Equity',data:eqs,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.07)',fill:true,tension:0.35,pointRadius:4,pointBackgroundColor:'#3b82f6',pointBorderColor:'#0a0f1a',pointBorderWidth:2},
-      {label:'เป้าหมาย',data:labels.map(()=>TARGET),borderColor:'#10b981',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false},
-      {label:'โซนอันตราย',data:labels.map(()=>BUST),borderColor:'#ef4444',borderDash:[3,3],borderWidth:1,pointRadius:0,fill:false},
+    data:{labels:eqLabels,datasets:[
+      {label:'Equity',data:eqVals,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.07)',fill:true,tension:0.35,pointRadius:4,pointBackgroundColor:'#3b82f6',pointBorderColor:'#0a0f1a',pointBorderWidth:2},
+      {label:'เป้าหมาย',data:eqLabels.map(()=>TARGET),borderColor:'#10b981',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false},
+      {label:'อันตราย',data:eqLabels.map(()=>BUST),borderColor:'#ef4444',borderDash:[3,3],borderWidth:1,pointRadius:0,fill:false},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+Math.round(ctx.raw).toLocaleString()+' ฿'}}},
-      scales:{
-        x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
-        y:{ticks:{color:'#64748b',font:{size:10},callback:v=>v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}}
-      }
-    }
+      plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
+              y:{ticks:{color:'#64748b',font:{size:10},callback:v=>v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}}}}
   });
 
-  const pnls=records.map(r=>r.pnl);
   if(pnlC) pnlC.destroy();
   pnlC=new Chart(document.getElementById('pnlChart'),{
     type:'bar',
-    data:{labels:records.map(r=>r.date.slice(5).replace('-','/')),
-      datasets:[{data:pnls,backgroundColor:pnls.map(v=>v>=0?'rgba(16,185,129,0.7)':'rgba(239,68,68,0.7)'),borderRadius:4}]},
+    data:{labels:dates.map(d=>d.slice(5).replace('-','/')),
+      datasets:[{data:pnlVals,backgroundColor:pnlVals.map(v=>v>=0?'rgba(16,185,129,0.7)':'rgba(239,68,68,0.7)'),borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{color:'#64748b',font:{size:10}},grid:{display:false}},
-        y:{ticks:{color:'#64748b',font:{size:10},callback:v=>(v>=0?'+':'')+v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}}
-      }
-    }
+      scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{display:false}},
+              y:{ticks:{color:'#64748b',font:{size:10},callback:v=>(v>=0?'+':'')+v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}}}}
   });
 }
 
 function renderSession(){
   const map={};
-  SESS_ALL.forEach(s=>map[s]={pnl:0,w:0,l:0,days:0});
-  records.forEach(r=>{ if(map[r.sess]){map[r.sess].pnl+=r.pnl;map[r.sess].w+=r.w;map[r.sess].l+=r.l;map[r.sess].days++;} });
-  const active=SESS_ALL.filter(s=>map[s].days>0);
+  SESS_ALL.forEach(s=>map[s]={pnl:0,w:0,l:0,n:0});
+  entries.forEach(r=>{ if(map[r.sess]){map[r.sess].pnl+=r.pnl;map[r.sess].w+=r.w;map[r.sess].l+=r.l;map[r.sess].n++;} });
+  const active=SESS_ALL.filter(s=>map[s].n>0);
   const hasData=active.length>0;
   const sPnl=active.map(s=>map[s].pnl);
   const sWr=active.map(s=>{const d=map[s];return d.w+d.l>0?Math.round(d.w/(d.w+d.l)*100):0;});
@@ -679,52 +575,39 @@ function renderSession(){
   if(sessC) sessC.destroy();
   sessC=new Chart(document.getElementById('sessChart'),{
     type:'bar',
-    data:{
-      labels:hasData?active:['ยังไม่มีข้อมูล'],
-      datasets:[
-        {label:'PnL รวม',data:hasData?sPnl:[0],backgroundColor:sPnl.map(v=>v>=0?'rgba(16,185,129,0.7)':'rgba(239,68,68,0.7)'),borderRadius:4,yAxisID:'y'},
-        {label:'Win Rate %',data:hasData?sWr:[0],type:'line',borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.1)',pointBackgroundColor:'#f59e0b',pointRadius:5,yAxisID:'y2',tension:0.3},
-      ]
-    },
+    data:{labels:hasData?active:['ยังไม่มีข้อมูล'],datasets:[
+      {label:'PnL รวม',data:hasData?sPnl:[0],backgroundColor:sPnl.map(v=>v>=0?'rgba(16,185,129,0.7)':'rgba(239,68,68,0.7)'),borderRadius:4,yAxisID:'y'},
+      {label:'Win Rate %',data:hasData?sWr:[0],type:'line',borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.1)',pointBackgroundColor:'#f59e0b',pointRadius:4,yAxisID:'y2',tension:0.3},
+    ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'top',labels:{color:'#94a3b8',font:{size:11},boxWidth:10,padding:12}}},
-      scales:{
-        x:{ticks:{color:'#64748b',font:{size:10}},grid:{display:false}},
-        y:{ticks:{color:'#64748b',font:{size:10},callback:v=>(v>=0?'+':'')+v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}},
-        y2:{position:'right',ticks:{color:'#f59e0b',font:{size:10},callback:v=>v+'%'},grid:{display:false}}
-      }
-    }
+      plugins:{legend:{position:'top',labels:{color:'#94a3b8',font:{size:10},boxWidth:8,padding:10}}},
+      scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{display:false}},
+              y:{ticks:{color:'#64748b',font:{size:10},callback:v=>(v>=0?'+':'')+v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}},
+              y2:{position:'right',ticks:{color:'#f59e0b',font:{size:10},callback:v=>v+'%'},grid:{display:false}}}}
   });
 
   document.getElementById('sess-cards').innerHTML=SESS_ALL.map(s=>{
     const d=map[s];
-    const clr=!d.days?'var(--text3)':d.pnl>=0?'var(--green)':'var(--red)';
+    const clr=!d.n?'var(--text3)':d.pnl>=0?'var(--green)':'var(--red)';
     const wr=d.w+d.l>0?Math.round(d.w/(d.w+d.l)*100):null;
-    const shortName=s.split(' ')[0];
     return `<div class="sess-card">
-      <div class="sess-name">${shortName}</div>
-      <div class="sess-pnl" style="color:${clr}">${d.days?fmt(d.pnl,true):'—'}</div>
-      <div class="sess-wr">${wr!==null?'WR '+wr+'% · '+d.days+'วัน':'ยังไม่มีข้อมูล'}</div>
+      <div class="sess-name">${s.split(' ')[0]}</div>
+      <div class="sess-pnl" style="color:${clr}">${d.n?fmt(d.pnl,true):'—'}</div>
+      <div class="sess-wr">${wr!==null?'WR '+wr+'% · '+d.n+'เกม':'ยังไม่มีข้อมูล'}</div>
     </div>`;
   }).join('');
 
-  if(hasData && sPnl.length>1){
+  if(hasData&&sPnl.length>1){
     const best=active[sPnl.indexOf(Math.max(...sPnl))];
     const worst=active[sPnl.indexOf(Math.min(...sPnl))];
     document.getElementById('sess-tip').innerHTML=`<div class="insight">
-      💡 <strong>คำแนะนำจากข้อมูล:</strong>
-      ช่วงที่ดีที่สุด = <span style="color:var(--green)">${best}</span>
-      · ช่วงที่แย่ที่สุด = <span style="color:var(--red)">${worst}</span>
-      — พิจารณาหลีกเลี่ยงหรือลด stake ในช่วง <strong>${worst}</strong>
+      💡 <strong>ช่วงที่ดีสุด:</strong> <span style="color:var(--green)">${best}</span>
+      &nbsp;·&nbsp; <strong>ช่วงที่แย่สุด:</strong> <span style="color:var(--red)">${worst}</span>
+      — พิจารณาลด stake ในช่วง <strong>${worst}</strong>
     </div>`;
   } else {
     document.getElementById('sess-tip').innerHTML='';
   }
-}
-
-function scaleBets(capital){
-  const factor=Math.sqrt(capital/INIT);
-  return BETS.map(b=>Math.max(50,Math.round(b*factor/50)*50));
 }
 
 function renderAutoScale(eq){
@@ -736,108 +619,92 @@ function renderAutoScale(eq){
   const safetyRatio=(eq/totalRisk).toFixed(1);
   const canCover=Math.floor(eq/totalRisk);
 
-  // badge
   const badge=document.getElementById('scale-badge');
-  if(isScaled){
-    badge.className='scale-badge scale-badge-up';
-    badge.textContent='⬆ Scale Up แนะนำ';
-  } else {
-    badge.className='scale-badge scale-badge-same';
-    badge.textContent='ระดับเดิม';
-  }
+  badge.className='scale-badge '+(isScaled?'scale-badge-up':'scale-badge-same');
+  badge.textContent=isScaled?'⬆ Scale Up แนะนำ':'ระดับเดิม';
 
-  // bet cards
   document.getElementById('scale-bets').innerHTML=scaled.map((b,i)=>{
     const diff=b-BETS[i];
     const changed=diff!==0;
-    const diffHtml=changed
-      ? `<div class="scale-bet-diff" style="color:var(--green)">+${diff.toLocaleString()} ฿</div>`
-      : `<div class="scale-bet-diff" style="color:var(--text3)">เดิม</div>`;
     return `<div class="scale-bet ${changed?'changed':''}">
       <div class="scale-bet-lbl">ไม้ ${i+1}</div>
       <div class="scale-bet-val">${b.toLocaleString()}</div>
-      ${diffHtml}
+      <div class="scale-bet-diff" style="color:${changed?'var(--green)':'var(--text3)'}">${changed?'+'+diff.toLocaleString():'เดิม'}</div>
     </div>`;
   }).join('');
 
-  // info row
   document.getElementById('scale-info').innerHTML=`
-    <div class="scale-info-item">
-      <div class="scale-info-lbl">Scale Factor</div>
-      <div class="scale-info-val" style="color:var(--blue)">${factor.toFixed(2)}×</div>
-    </div>
-    <div class="scale-info-item">
-      <div class="scale-info-lbl">กำไร/win</div>
-      <div class="scale-info-val" style="color:var(--green)">+${profitPerWin.toLocaleString()} ฿</div>
-    </div>
-    <div class="scale-info-item">
-      <div class="scale-info-lbl">Safety Ratio</div>
-      <div class="scale-info-val" style="color:${parseFloat(safetyRatio)>=1.5?'var(--green)':'var(--amber)'}">${safetyRatio}× (${canCover} ครั้ง)</div>
-    </div>`;
+    <div class="scale-info-item"><div class="scale-info-lbl">Scale Factor</div><div class="scale-info-val" style="color:var(--blue)">${factor.toFixed(2)}×</div></div>
+    <div class="scale-info-item"><div class="scale-info-lbl">กำไร/win</div><div class="scale-info-val" style="color:var(--green)">+${profitPerWin.toLocaleString()} ฿</div></div>
+    <div class="scale-info-item"><div class="scale-info-lbl">Safety Ratio</div><div class="scale-info-val" style="color:${parseFloat(safetyRatio)>=1.5?'var(--green)':'var(--amber)'}">${safetyRatio}× (${canCover} ครั้ง)</div></div>`;
 
-  // formula
-  const nextTrigger=Math.round(INIT*Math.pow(1.5,2));
   document.getElementById('scale-formula').innerHTML=`
-    <b>สูตร:</b> ไม้แรก = 300 × √(ทุน ÷ 20,000) ปัดกลมทุก 50 ฿ &nbsp;|&nbsp;
-    ทุนปัจจุบัน <b>${eq.toLocaleString()} ฿</b> → factor <b>${factor.toFixed(2)}×</b> → ไม้แรก <b>${scaled[0].toLocaleString()} ฿</b>
-    ${!isScaled ? `&nbsp;|&nbsp; แนะนำ Scale Up เมื่อทุนถึง <b style="color:var(--amber)">~45,000 ฿</b>` : `&nbsp;|&nbsp; <span style="color:var(--green)">✅ ใช้ชุด bet นี้ได้เลย</span>`}`;
-}
-
-function updateSidebar(){
-  const startStep=parseInt(document.getElementById('inp-start').value)||1;
-  const eq=records.length?records[records.length-1].equity:INIT;
-  const sb=scaleBets(eq);
-  // ถ้าช่องจำนวนเงินว่างอยู่ ใส่ค่า auto-scale ให้เลย
-  const amtEl=document.getElementById('inp-bet-amt');
-  if(!amtEl.value) amtEl.value=sb[startStep-1];
-}
-
-function renderStopWin(eq){
-  const today=new Date().toISOString().split('T')[0];
-  const todayPnl=records.filter(r=>r.date===today).reduce((a,r)=>a+r.pnl,0);
-  const dailyTarget=Math.round(eq*0.05);
-  const pct=Math.max(0,Math.min(100,Math.round(todayPnl/dailyTarget*100)));
-  const remain=dailyTarget-todayPnl;
-
-  document.getElementById('sw-pct').textContent=pct+'%';
-  const bar=document.getElementById('sw-bar');
-  bar.style.width=pct+'%';
-  bar.style.background=pct>=100?'var(--green)':pct>=80?'var(--amber)':'var(--blue)';
-
-  const sw=document.getElementById('sw-sidebar');
-  if(todayPnl>=dailyTarget){
-    sw.innerHTML=`<div class="alert alert-ok" style="padding:8px 12px;font-size:12px"><span>🎯</span><div><b>ถึงเป้าวันนี้แล้ว!</b> +${todayPnl.toLocaleString()} ฿ (เป้า ${dailyTarget.toLocaleString()} ฿)</div></div>`;
-  } else if(pct>=80){
-    sw.innerHTML=`<div class="alert alert-warn" style="padding:8px 12px;font-size:12px"><span>⚡</span><div><b>ใกล้ถึงเป้า!</b> เหลืออีก ${remain.toLocaleString()} ฿</div></div>`;
-  } else {
-    sw.innerHTML=`<div style="font-size:11px;color:var(--text3);padding:4px 0">🎯 เป้าวันนี้ ${dailyTarget.toLocaleString()} ฿ · เหลือ ${remain.toLocaleString()} ฿</div>`;
-  }
+    <b>สูตร:</b> ไม้แรก = 300 × √(ทุน ÷ 20,000) &nbsp;|&nbsp;
+    ทุน ${eq.toLocaleString()} ฿ → factor <b>${factor.toFixed(2)}×</b> → ไม้แรก <b>${scaled[0].toLocaleString()} ฿</b>
+    ${!isScaled?'&nbsp;|&nbsp; แนะนำ Scale Up เมื่อทุนถึง <b style="color:var(--amber)">~45,000 ฿</b>':'&nbsp;|&nbsp; <span style="color:var(--green)">✅ ใช้ชุด bet นี้ได้เลย</span>'}`;
 }
 
 function renderTable(){
   const tbody=document.getElementById('tbl-body');
   const empty=document.getElementById('empty-msg');
-  if(!records.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  if(!entries.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
   empty.style.display='none';
-  tbody.innerHTML=[...records].reverse().map(r=>{
+
+  // group by date เพื่อแสดง summary row
+  const sorted=[...entries].reverse();
+  let rows='';
+  let lastDate='';
+
+  sorted.forEach(r=>{
     const wr=r.w+r.l>0?Math.round(r.w/(r.w+r.l)*100)+'%':'—';
     const pc=r.pnl>=0?'b-green':'b-red';
-    const sc=r.s===5?'b-red':r.s>=3?'b-amber':'b-green';
     const d=new Date(r.date);
     const dStr=`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
     const sessShort=r.sess.split(' ')[0];
-    return `<tr>
-      <td style="white-space:nowrap">${dStr}</td>
-      <td><span class="badge b-blue">${sessShort}</span></td>
+
+    // ถ้าวันใหม่ แสดง summary ของวันก่อน
+    if(lastDate && r.date!==lastDate){
+      const dayEntries=entries.filter(e=>e.date===lastDate);
+      const dayPnl=dayEntries.reduce((a,e)=>a+e.pnl,0);
+      const dayEq=dayEntries[dayEntries.length-1].equity;
+      rows+=`<tr class="day-summary">
+        <td colspan="8" style="color:var(--text2);font-size:11px">สรุปวัน ${lastDate.slice(5).replace('-','/')}</td>
+        <td><span class="badge ${dayPnl>=0?'b-green':'b-red'}">${fmt(dayPnl,true)}</span></td>
+        <td style="font-family:'Space Mono',monospace;font-size:11px">${fmt(dayEq)}</td>
+        <td></td>
+      </tr>`;
+    }
+    lastDate=r.date;
+
+    rows+=`<tr>
+      <td style="white-space:nowrap;font-size:11px">${dStr}</td>
+      <td><span class="badge b-blue" style="font-size:9px">${sessShort}</span></td>
+      <td style="font-size:11px">ไม้ ${r.startStep}</td>
+      <td style="font-family:'Space Mono',monospace;font-size:11px">${r.bet.toLocaleString()}</td>
+      <td style="font-size:11px">${r.odds}</td>
       <td style="color:var(--green)">${r.w}</td>
       <td style="color:var(--red)">${r.l}</td>
-      <td>${wr}</td>
-      <td><span class="badge ${sc}">ไม้ ${r.s}</span></td>
+      <td style="font-size:11px">${wr}</td>
       <td><span class="badge ${pc}">${fmt(r.pnl,true)}</span></td>
-      <td style="font-family:'Space Mono',monospace;font-size:12px">${fmt(r.equity)}</td>
-      <td style="color:var(--text3);font-size:12px">${r.note||'—'}</td>
+      <td style="font-family:'Space Mono',monospace;font-size:11px">${fmt(r.equity)}</td>
+      <td style="color:var(--text3);font-size:11px">${r.note||'—'}</td>
     </tr>`;
-  }).join('');
+  });
+
+  // summary วันสุดท้าย
+  if(lastDate){
+    const dayEntries=entries.filter(e=>e.date===lastDate);
+    const dayPnl=dayEntries.reduce((a,e)=>a+e.pnl,0);
+    const dayEq=dayEntries[dayEntries.length-1].equity;
+    rows+=`<tr class="day-summary">
+      <td colspan="8" style="color:var(--text2);font-size:11px">สรุปวัน ${lastDate.slice(5).replace('-','/')}</td>
+      <td><span class="badge ${dayPnl>=0?'b-green':'b-red'}">${fmt(dayPnl,true)}</span></td>
+      <td style="font-family:'Space Mono',monospace;font-size:11px">${fmt(dayEq)}</td>
+      <td></td>
+    </tr>`;
+  }
+
+  tbody.innerHTML=rows;
 }
 </script>
 </body>
