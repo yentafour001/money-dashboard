@@ -42,12 +42,12 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .field input:focus,.field select:focus{border-color:var(--blue)}
 .field select option{background:var(--bg2)}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.btn-primary{width:100%;padding:9px;border-radius:var(--radius-sm);background:linear-gradient(135deg,#2563eb,#1d9e75);border:none;color:#fff;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.btn-primary{width:100%;padding:9px;border-radius:var(--radius-sm);background:linear-gradient(135deg,#2563eb,#1d9e75);border:none;color:#fff;font-family:'Sarabun',sans-serif;font-size:14px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .btn-primary:hover{opacity:.9}
-.btn-ghost{width:100%;padding:7px;border-radius:var(--radius-sm);background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Sarabun',sans-serif;font-size:12px;cursor:pointer}
+.btn-ghost{width:100%;padding:7px;border-radius:var(--radius-sm);background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Sarabun',sans-serif;font-size:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .btn-ghost:hover{background:var(--bg3)}
 .btn-danger{border-color:rgba(239,68,68,.3);color:var(--red)}
-.rbtn{padding:8px 2px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg3);cursor:pointer;text-align:center;font-family:'Sarabun',sans-serif;transition:all .15s;width:100%}
+.rbtn{padding:8px 2px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg3);cursor:pointer;text-align:center;font-family:'Sarabun',sans-serif;transition:all .15s;width:100%;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 .rbtn:hover{opacity:.85}
 .rbtn-wf{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.06)}
 .rbtn-wh{border-color:rgba(16,185,129,.2);background:rgba(16,185,129,.04)}
@@ -220,31 +220,31 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
     <div>
       <div style="font-size:11px;color:var(--text2);margin-bottom:6px">🎯 ผลลัพธ์บิลนี้</div>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px">
-        <button class="rbtn rbtn-wf" onclick="selectResult('win_full')" id="btn-win_full">
+        <div class="rbtn rbtn-wf" ontouchstart="selectResult('win_full')" onclick="selectResult('win_full')" id="btn-win_full">
           <span style="font-size:16px">✅</span>
           <span style="font-size:9px;color:var(--text2);display:block">ชนะเต็ม</span>
           <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:#10b981" id="pv-win_full">+240</span>
-        </button>
-        <button class="rbtn rbtn-wh" onclick="selectResult('win_half')" id="btn-win_half">
+        </div>
+        <div class="rbtn rbtn-wh" ontouchstart="selectResult('win_half')" onclick="selectResult('win_half')" id="btn-win_half">
           <span style="font-size:16px">🟡</span>
           <span style="font-size:9px;color:var(--text2);display:block">ชนะครึ่ง</span>
           <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:#6ee7b7" id="pv-win_half">+120</span>
-        </button>
-        <button class="rbtn rbtn-dr" onclick="selectResult('draw')" id="btn-draw">
+        </div>
+        <div class="rbtn rbtn-dr" ontouchstart="selectResult('draw')" onclick="selectResult('draw')" id="btn-draw">
           <span style="font-size:16px">⚪</span>
           <span style="font-size:9px;color:var(--text2);display:block">เจ๊า/คืน</span>
           <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:var(--text2)" id="pv-draw">0</span>
-        </button>
-        <button class="rbtn rbtn-lh" onclick="selectResult('lose_half')" id="btn-lose_half">
+        </div>
+        <div class="rbtn rbtn-lh" ontouchstart="selectResult('lose_half')" onclick="selectResult('lose_half')" id="btn-lose_half">
           <span style="font-size:16px">🟠</span>
           <span style="font-size:9px;color:var(--text2);display:block">แพ้ครึ่ง</span>
           <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:var(--amber)" id="pv-lose_half">-150</span>
-        </button>
-        <button class="rbtn rbtn-lf" onclick="selectResult('lose_full')" id="btn-lose_full">
+        </div>
+        <div class="rbtn rbtn-lf" ontouchstart="selectResult('lose_full')" onclick="selectResult('lose_full')" id="btn-lose_full">
           <span style="font-size:16px">🔴</span>
           <span style="font-size:9px;color:var(--text2);display:block">แพ้เต็ม</span>
           <span style="font-size:10px;font-weight:700;font-family:'Space Mono',monospace;display:block;color:var(--red)" id="pv-lose_full">-300</span>
-        </button>
+        </div>
       </div>
     </div>
 
@@ -427,7 +427,8 @@ function updateResultBtns(){
   });
 }
 
-function selectResult(type){
+function selectResult(type,e){
+  if(e && e.type==='touchstart') e.preventDefault();
   selectedResult=type;
   document.querySelectorAll('.rbtn').forEach(b=>b.classList.remove('active'));
   const btn=document.getElementById('btn-'+type);
